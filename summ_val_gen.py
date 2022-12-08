@@ -23,9 +23,6 @@ def get_cmd_args():
 	parser.add_argument('--func_name', metavar='name', type=str,
 						help='Name of the concrete function in the given path')
 
-	parser.add_argument('-omit', type=str, choices=['summ','func'], default=[], nargs='+',
-						help='Omit the summary/function code to the test')
-
 	parser.add_argument('--arraysize', metavar='value', nargs='+', type=int, required=False, default=[5],
 						help='Define array sizes for each tests (default:5)')
 
@@ -35,8 +32,8 @@ def get_cmd_args():
 	parser.add_argument('--lib', metavar='path', nargs='+', type=str, required=False,
 						help='Path to external files needed to compile the test binary')
 
-	parser.add_argument('-api', action='store_true',
-						help='Include Validation API stubs')
+	parser.add_argument('-noAPI', action='store_true',
+						help='Do not include the Validation API stubs')
 
 	parser.add_argument('-compile', action='store_true',
 						help='Compile the generated test')
@@ -97,12 +94,11 @@ if __name__ == "__main__":
 	maxvalue = args.maxvalue
 	summ_name = args.summ_name
 	func_name = args.func_name
-	omit = args.omit
 	ccompile = args.compile
 	lib_paths = args.lib
 	memory = args.memory
 	config_file = args.config
-	api = args.api
+	noapi = args.noAPI
 
 	if config_file:
 		conf_arraysize, conf_maxvalue,\
@@ -121,9 +117,6 @@ if __name__ == "__main__":
 		if conf_func_name:
 			func_name = conf_func_name		
 
-		if conf_omit:
-			omit = conf_omit		
-	
 	if not concrete_function and not target_summary:
 		sys.exit('ERROR: At least the code for a concrete function or summary MUST be provided')
 
@@ -138,15 +131,10 @@ if __name__ == "__main__":
 		sys.exit(msg)
 
 
-	
-	if ccompile:
-		api = True
-
-
 	valgenerator = ValidationGenerator(concrete_function, target_summary,
 					 			 		outputfile, arraysize,
 										maxvalue, memory,
-										func_name, summ_name, omit, api)
+										func_name, summ_name, noapi)
 	file = valgenerator.gen()
 
 	assert(file == outputfile)

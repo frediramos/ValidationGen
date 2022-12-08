@@ -19,7 +19,7 @@ class ValidationGenerator(CGenerator):
 				 outputfile,
 				 arraysize = [5], maxnum = [],
 				 memory = False,
-				 cncrt_name = None, summ_name=None, omit=[], api=False,
+				 cncrt_name = None, summ_name=None, no_api=False,
 				 fakelib=None):
 
 		super().__init__(outputfile, summary, concrete_func, fakelib)
@@ -32,8 +32,7 @@ class ValidationGenerator(CGenerator):
 		self.summ_name = summ_name
 		self.cncrt_name = cncrt_name
 
-		self.omit = omit
-		self.api = True
+		self.no_api = no_api
 
 
 	def _omit(self, defs):
@@ -208,24 +207,24 @@ class ValidationGenerator(CGenerator):
 		#Add core api functions
 		headers = []
 
-		if self.api:
+		if not self.no_api:
 			headers += API.type_defs
 			headers += API.validation_api.values()
 			headers.append('\n')
 
-		#Visitor to get all function calls
-		call_vis = FCallsVisitor()
-		call_vis.visit(summ_def)
-		calls = call_vis.fcalls()
+			#Visitor to get all function calls
+			call_vis = FCallsVisitor()
+			call_vis.visit(summ_def)
+			calls = call_vis.fcalls()
 
-		#Check if calls are api functions
-		#Only add stubs for functions not already added by API.validation_api
-		for c in calls:
-			if c in API.all_api.keys():
-				stub = API.all_api[c]
-				if c not in API.validation_api:
-					headers.append(stub)
-		headers.append('\n')
+			#Check if calls are api functions
+			#Only add stubs for functions not already added by API.validation_api
+			for c in calls:
+				if c in API.all_api.keys():
+					stub = API.all_api[c]
+					if c not in API.validation_api:
+						headers.append(stub)
+			headers.append('\n')
 
 		#Array size macros
 		i = 0
@@ -303,10 +302,8 @@ class ValidationGenerator(CGenerator):
 
 			block = Compound(main_body)
 			main_ast = FuncDef(main, None, block, None)
-
-			defs = self._omit(function_defs)
-			
-			gen_ast = FileAST(defs + test_defs)
+		
+			gen_ast = FileAST(function_defs + test_defs)
 			gen_ast.ext.append(main_ast)
 
 
