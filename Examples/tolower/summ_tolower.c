@@ -30,4 +30,3 @@ int summ_tolower(int c){
 		
 	}
 }
-z
