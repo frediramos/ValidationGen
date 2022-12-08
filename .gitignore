@@ -57,3 +57,4 @@ __pycache__/
 #AVD
 *.bap
 outputs
+*.json
