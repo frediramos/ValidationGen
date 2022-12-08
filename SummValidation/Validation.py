@@ -19,7 +19,7 @@ class ValidationGenerator(CGenerator):
 				 outputfile,
 				 arraysize = [5], maxnum = [],
 				 memory = False,
-				 cncrt_name = None, summ_name=None, omit=[],
+				 cncrt_name = None, summ_name=None, omit=[], api=False,
 				 fakelib=None):
 
 		super().__init__(outputfile, summary, concrete_func, fakelib)
@@ -33,6 +33,7 @@ class ValidationGenerator(CGenerator):
 		self.cncrt_name = cncrt_name
 
 		self.omit = omit
+		self.api = True
 
 
 	def _omit(self, defs):
@@ -206,9 +207,11 @@ class ValidationGenerator(CGenerator):
 
 		#Add core api functions
 		headers = []
-		headers += API.type_defs
-		headers += API.validation_api.values()
-		headers.append('\n')
+
+		if self.api:
+			headers += API.type_defs
+			headers += API.validation_api.values()
+			headers.append('\n')
 
 		#Visitor to get all function calls
 		call_vis = FCallsVisitor()
@@ -314,8 +317,10 @@ class ValidationGenerator(CGenerator):
 			file_name = os.path.basename(__file__)
 			self._write_to_file(generated_string, header, file_name)
 			self._remove_files(tmp_concrete, tmp_summary)
+			return self.outputfile
 
 		except Exception:
 			self._remove_files(tmp_concrete, tmp_summary)
 			print(traceback.format_exc())
+			return None
 

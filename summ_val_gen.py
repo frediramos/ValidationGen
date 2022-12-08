@@ -35,6 +35,9 @@ def get_cmd_args():
 	parser.add_argument('--lib', metavar='path', nargs='+', type=str, required=False,
 						help='Path to external files needed to compile the test binary')
 
+	parser.add_argument('-api', action='store_true',
+						help='Include Validation API stubs')
+
 	parser.add_argument('-compile', action='store_true',
 						help='Compile the generated test')
 	
@@ -99,6 +102,7 @@ if __name__ == "__main__":
 	lib_paths = args.lib
 	memory = args.memory
 	config_file = args.config
+	api = args.api
 
 	if config_file:
 		conf_arraysize, conf_maxvalue,\
@@ -134,12 +138,18 @@ if __name__ == "__main__":
 		sys.exit(msg)
 
 
+	
+	if ccompile:
+		api = True
+
 
 	valgenerator = ValidationGenerator(concrete_function, target_summary,
 					 			 		outputfile, arraysize,
 										maxvalue, memory,
-										func_name, summ_name, omit)
-	valgenerator.gen()
+										func_name, summ_name, omit, api)
+	file = valgenerator.gen()
+
+	assert(file == outputfile)
 
 	if ccompile:
 		bin_name = outputfile[:-2] #Remove '.c'
