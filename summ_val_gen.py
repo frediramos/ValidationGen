@@ -35,7 +35,7 @@ def get_cmd_args():
 	parser.add_argument('-noAPI', action='store_true',
 						help='Do not include the Validation API stubs')
 
-	parser.add_argument('-compile', action='store_true',
+	parser.add_argument('--compile', const='x86', choices=['x86', 'x64'], nargs='?',
 						help='Compile the generated test')
 	
 	parser.add_argument('-memory', action='store_true',
@@ -94,7 +94,7 @@ if __name__ == "__main__":
 	maxvalue = args.maxvalue
 	summ_name = args.summ_name
 	func_name = args.func_name
-	ccompile = args.compile
+	compile_arch = args.compile
 	lib_paths = args.lib
 	memory = args.memory
 	config_file = args.config
@@ -139,7 +139,7 @@ if __name__ == "__main__":
 
 	assert(file == outputfile)
 
-	if ccompile:
+	if compile_arch:
 		bin_name = outputfile[:-2] #Remove '.c'
-		comp = CCompiler(outputfile, bin_name, lib_paths)
+		comp = CCompiler(compile_arch, outputfile, bin_name, lib_paths)
 		comp.compile()

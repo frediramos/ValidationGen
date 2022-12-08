@@ -1,7 +1,9 @@
 import subprocess as sp
 
 class CCompiler():
-    def __init__(self, inputfile, outputfile, libs):
+    def __init__(self, arch, inputfile, outputfile, libs):
+        
+        self.arch = arch
         self.inputfile = inputfile
         self.outputfile = self.binary_name(outputfile)
 
@@ -10,6 +12,9 @@ class CCompiler():
                          '-Wno-int-conversion',
                          '-no-pie', '-Wno-unused-variable',
                          '-fno-builtin']
+
+        if self.arch == 'x86':
+            self.gcc_args.append('-m32')
 
         if not libs:
             libs = []
