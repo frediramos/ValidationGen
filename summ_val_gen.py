@@ -9,13 +9,13 @@ def get_cmd_args():
 	parser = argparse.ArgumentParser(description='Generate Summary Validation Tests')
 
 	parser.add_argument('-o', metavar='name', type=str, required=False, default='test.c',
-						help='Output name')
+						help='Test output name')
 
 	parser.add_argument('-func', metavar='file', type=str,
 						help='Path to file containing concrete function')
 
 	parser.add_argument('-summ', metavar='file', type=str,
-						help='Path to file containing the summary being evaluated')
+						help='Path to file containing target summary')
 
 	parser.add_argument('--summ_name', metavar='name', type=str,
 						help='Name of the summary in the given path')
