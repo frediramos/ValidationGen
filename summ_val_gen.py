@@ -12,10 +12,10 @@ def get_cmd_args():
 						help='Test output name')
 
 	parser.add_argument('-func', metavar='file', type=str,
-						help='Path to file containing concrete function')
+						help='Path to file containing the concrete function')
 
 	parser.add_argument('-summ', metavar='file', type=str,
-						help='Path to file containing target summary')
+						help='Path to file containing the target summary')
 
 	parser.add_argument('--summ_name', metavar='name', type=str,
 						help='Name of the summary in the given path')
@@ -24,10 +24,10 @@ def get_cmd_args():
 						help='Name of the concrete function in the given path')
 
 	parser.add_argument('--arraysize', metavar='value', nargs='+', type=int, required=False, default=[5],
-						help='Define array sizes for each tests (default:5)')
+						help='Maximum array size of each test (default:5)')
 
 	parser.add_argument('--maxvalue', metavar='value', nargs='+', type=int, required=False, default=[],
-						help='Define values to constrain numeric values')
+						help='Provide an upper bound for numeric values')
 
 	parser.add_argument('--lib', metavar='path', nargs='+', type=str, required=False,
 						help='Path to external files needed to compile the test binary')
