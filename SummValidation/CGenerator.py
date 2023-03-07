@@ -56,7 +56,7 @@ class CGenerator:
 
 	def exit(self, msg):
 		try:
-			self._remove_files(*self.tmp_files)
+			self.remove_files(*self.tmp_files)
 		except Exception:
 				pass
 

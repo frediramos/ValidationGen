@@ -130,6 +130,9 @@ class FunctionParser():
 		definition = None
 		message = None
 
+		if file.startswith('tmp_'):
+			file = file[4:]
+
 		if len(names) == 0:
 			message = f"ERROR: No {ftype}(s) provided in: \'{file}\'"
 			raise FunctionException(message)
