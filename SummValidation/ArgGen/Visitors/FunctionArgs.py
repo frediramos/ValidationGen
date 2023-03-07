@@ -1,13 +1,8 @@
-from pycparser import parse_file, c_generator
 from pycparser.c_ast import *
 
 from ..Generators.Types.ArrayType import ArrayTypeGen
 from ..Generators.Types.PrimitiveType import PrimitiveTypeGen
 from ..Generators.Types.StructType import StructTypeGen
-
-import SummValidation.Utils.utils as utils
-from CProcessor import config
-
 
 
 class ArgVisitor(NodeVisitor):
