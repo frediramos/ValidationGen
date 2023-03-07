@@ -36,7 +36,7 @@ class ValidationGenerator(CGenerator):
 
 	#Gen headers
 	#Typedefs, API stubs and Macros
-	def _gen_headers(self, defs):
+	def gen_headers(self, defs):
 		_ , summ_def = defs
 
 		#Add core api functions
@@ -52,32 +52,31 @@ class ValidationGenerator(CGenerator):
 			call_vis.visit(summ_def)
 			calls = call_vis.fcalls()
 
-			#Check if calls are api functions
+			#Check if calls are api functions	
 			#Only add stubs for functions not already added by API.validation_api
-			for c in calls:
-				if c in API.all_api.keys():
-					stub = API.all_api[c]
-					if c not in API.validation_api:
-						headers.append(stub)
+			calls = filter(lambda x: x in API.all_api.keys(), calls)
+			calls = filter(lambda x: x not in API.validation_api, calls)
+
+			headers += [API.all_api[c] for c in calls]
 			headers.append('\n')
-
-		#Array size macros
-		i = 0
-		for size in self.arraysize:	
-			i += 1	
-			headers.append(defineMacro(f'{ARRAY_SIZE_MACRO}_{i}', size))
-		
-		#Max numeric value macros
-		j = 0
-		for max in self.maxnum:	
-			j += 1	
-			headers.append(defineMacro(f'{MAX_MACRO}_{j}', max))
-
+			
+		#Macros
+		headers += self.genMacros(ARRAY_SIZE_MACRO, self.arraysize)
+		headers += self.genMacros(MAX_MACRO, self.maxnum)
 		return headers
+
+	
+
+	def genMacros(self, macro, values =[]):
+		macros = []
+		for v, i in enumerate(values):
+			string = defineMacro(f'{macro}_{i}', v)
+			macros.append(string)		
+		return macros
 
 
 	#Generate the tests code
-	def _gen_tests(self, args, ret_type):
+	def genTests(self, args, ret_type):
 
 		#Gen helpers
 		api_gen = API_Gen()	
@@ -134,7 +133,7 @@ class ValidationGenerator(CGenerator):
 				
 				self.cncrt_name = cname
 				self.summ_name = sname
-				header = self._gen_headers(function_defs)	
+				header = self.gen_headers(function_defs)	
 						
 			except FunctionException as e:
 				self.exit(str(e))
@@ -143,7 +142,7 @@ class ValidationGenerator(CGenerator):
 			main = createFunction(name='main',args=None, returnType='int')
 			
 			#Gen test definitions and calls from main
-			test_defs, main_body = self._gen_tests(args, ret_type)
+			test_defs, main_body = self.genTests(args, ret_type)
 
 			block = Compound(main_body)
 			main_ast = FuncDef(main, None, block, None)
