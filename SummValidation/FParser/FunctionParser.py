@@ -1,7 +1,7 @@
 import os
 from pycparser import parse_file
 
-from SummValidation.ArgGen.Symbolic_Args import Symbolic_Args
+from SummValidation.TestGen.ArgGen import Symbolic_Args
 
 from .FunctionException import FunctionException
 from .FunctionVisitors import InitialVisitor, ReturnTypeVisior

@@ -1,5 +1,6 @@
-from SummValidation.ArgGen.Visitors.FunctionArgs import ArgVisitor
 from pycparser.c_ast import *
+
+from . Visitors.FunctionArgs import ArgVisitor
 
 class Symbolic_Args():
     def __init__(self, args, size_macro = None, max_macro = None):

@@ -1,8 +1,9 @@
 from pycparser.c_ast import *
 
 from SummValidation.APIGen.APIGen import API_Gen
-from SummValidation.ArgGen.Symbolic_Args import Symbolic_Args
 from SummValidation.Utils.utils import returnValue
+
+from . ArgGen import Symbolic_Args
 
 class TestGen:
     def __init__(self, args, ret, cncrt_name, summ_name, memory):   
