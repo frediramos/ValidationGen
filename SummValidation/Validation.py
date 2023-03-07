@@ -69,8 +69,8 @@ class ValidationGenerator(CGenerator):
 
 	def genMacros(self, macro, values =[]):
 		macros = []
-		for v, i in enumerate(values):
-			string = defineMacro(f'{macro}_{i}', v)
+		for i, v in enumerate(values):
+			string = defineMacro(f'{macro}_{i+1}', v)
 			macros.append(string)		
 		return macros
 
@@ -78,45 +78,50 @@ class ValidationGenerator(CGenerator):
 	#Generate the tests code
 	def genTests(self, args, ret_type):
 
-		#Gen helpers
-		api_gen = API_Gen()	
-		test_gen = TestGen(args, ret_type, self.cncrt_name, self.summ_name, self.memory)
-
 		test_defs = []
 		main_body = []
-
-		array_size = f'{ARRAY_SIZE_MACRO}_1' #There is always one default size macro
 
 		#Number of tests
 		tests = max(len(self.maxnum),len(self.arraysize))
 
-		for i in range(1, tests):	
-	
-			main_body.append(api_gen.save_current_state(f'fresh_state{i}'))
-		
+		main_body += [API_Gen().save_current_state(f'fresh_state{i}')
+					 for i in range(1,tests)]
+
 		for i in range(1, tests+1):	
-			
-			#Create test name
-			test_name = f'test_{i}'
+			testName = f'test_{i}'
 
-			if i <= len(self.arraysize):
-				array_size = f'{ARRAY_SIZE_MACRO}_{i}'
-
-			max_value = None
-			if i <= len(self.maxnum):
-				max_value = f'{MAX_MACRO}_{i}'
-
-			#Gen test using helper
-			test_defs.append(test_gen.createTest(test_name, array_size, max_value, i))
+			#Gen test code
+			testCode = self.genTest(testName, args, ret_type, i)
+			test_defs.append(testCode)
 			
 			#Call test function from main
-			main_body.append(FuncCall(ID(test_name), ExprList([])))
+			main_body.append(FuncCall(ID(testName), ExprList([])))
 
 			#Halt to a fresh state in between tests
 			if i < tests:
-				main_body.append(api_gen.halt_all(f'fresh_state{i}')) 
+				main_body.append(API_Gen().halt_all(f'fresh_state{i}')) 
 		
 		return test_defs, main_body
+
+
+	def genTest(self, testname, args, ret_type, id):
+		
+		#Select Macro for arraysize
+		arrId = min(id, len(self.arraysize))
+		array_size = f'{ARRAY_SIZE_MACRO}_{arrId}'
+
+		#Select Macro for Max value
+		max_value = None
+		if id <= len(self.maxnum):
+			max_value = f'{MAX_MACRO}_{id}'
+
+		#Call Gen visitor
+		gen = TestGen(args, ret_type,
+		 		self.cncrt_name, self.summ_name,
+		   		self.memory)
+
+		return gen.createTest(testname, array_size, max_value, id)
+			
 
 
 	#Generate summary validation test
@@ -127,9 +132,9 @@ class ValidationGenerator(CGenerator):
 
 			try:
 				fparser = FunctionParser(tmp_concrete, tmp_summary)
-				
-				cname, sname, function_defs, args, ret_type = \
-					  fparser.parse(self.cncrt_name, self.summ_name)
+				cname, sname,	\
+				function_defs, args,	\
+				ret_type = fparser.parse(self.cncrt_name, self.summ_name)
 				
 				self.cncrt_name = cname
 				self.summ_name = sname
@@ -149,7 +154,6 @@ class ValidationGenerator(CGenerator):
 		
 			gen_ast = FileAST(function_defs + test_defs)
 			gen_ast.ext.append(main_ast)
-
 
 			#Generate string from ast
 			generator = c_generator.CGenerator()
