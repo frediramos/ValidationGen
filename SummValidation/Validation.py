@@ -84,6 +84,7 @@ class ValidationGenerator(CGenerator):
 		#Number of tests
 		tests = max(len(self.maxnum),len(self.arraysize))
 
+		#Save Multiple fresh states if needed (multiple tests)
 		main_body += [API_Gen().save_current_state(f'fresh_state{i}')
 					 for i in range(1,tests)]
 
@@ -106,14 +107,12 @@ class ValidationGenerator(CGenerator):
 
 	def genTest(self, testname, args, ret_type, id):
 		
-		#Select Macro for arraysize
+		#Select Macro id for arraysize
 		arrId = min(id, len(self.arraysize))
 		array_size = f'{ARRAY_SIZE_MACRO}_{arrId}'
 
-		#Select Macro for Max value
-		max_value = None
-		if id <= len(self.maxnum):
-			max_value = f'{MAX_MACRO}_{id}'
+		#Select Macro id for Max value
+		max_value = f'{MAX_MACRO}_{id}' if id <= len(self.maxnum) else None
 
 		#Call Gen visitor
 		gen = TestGen(args, ret_type,
