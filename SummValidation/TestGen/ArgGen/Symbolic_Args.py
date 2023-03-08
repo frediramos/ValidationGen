@@ -19,7 +19,7 @@ class Symbolic_Args():
         self.args_dict = {}
 
         #Visit arguments 
-        for arg in args:
+        for arg in self.args:
 
             vis = ArgVisitor(self.size_macro, self.max_macro)   
             vis.visit(arg)
