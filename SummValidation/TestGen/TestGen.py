@@ -14,6 +14,14 @@ class TestGen:
         self.summ_name = summ_name
 
 
+    def call_function(self, fname, call_args, ret_name, ret_type):
+        lvalue = TypeDecl(ret_name, [], IdentifierType(names=[ret_type]))
+        rvalue = FuncCall(ID(fname), ExprList([a for a in map(lambda x: ID(x), call_args)]))
+        if ret_type =='void':
+            return rvalue  
+        return Decl(ret_name, [], [], [], lvalue, rvalue, None)
+
+
     def createTest(self, name, size_macro, max_macro, id):
 
         #Helper objects
@@ -38,13 +46,13 @@ class TestGen:
                 body.append(api_gen.mem_addr(ptr, size_macro))
 
         body +=[
-            sym_args_gen.call_function(self.cncrt_name, args_names, 'ret1', self.ret),
+            self.call_function(self.cncrt_name, args_names, 'ret1', self.ret),
             api_gen.get_cnstr('cnstr1', 'ret1', self.ret),
             api_gen.store_cnstr(f'cnctr_test{id}', 'cnstr1'),
             
             api_gen.halt_all('initial_state'),
 
-            sym_args_gen.call_function(self.summ_name, args_names, 'ret2', self.ret),			
+            self.call_function(self.summ_name, args_names, 'ret2', self.ret),			
             api_gen.get_cnstr('cnstr2', 'ret2', self.ret),
             api_gen.store_cnstr(f'summ_test{id}', 'cnstr2'),
 

@@ -48,19 +48,4 @@ class Symbolic_Args():
             if len(self.args_dict[name][1]) > 0:
                 ptr_names.append(name)
         
-        return ptr_names
-
-
-
-    def call_function(self, fname, call_args, ret_name, ret_type):
-        
-        lvalue = TypeDecl(ret_name, [], IdentifierType(names=[ret_type]))
-        rvalue = FuncCall(ID(fname), ExprList([a for a in map(lambda x: ID(x), call_args)]))
-
-        if ret_type =='void':
-            return rvalue
-        
-        return Decl(ret_name, [], [], [], lvalue, rvalue, None)
-
-    
-
+        return ptr_names   

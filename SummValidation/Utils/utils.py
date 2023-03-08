@@ -1,10 +1,24 @@
+import os
+
+from pycparser import parse_file
 from pycparser.c_ast import *
 
 SIZE_MACRO = 'SIZE'
 MAX_MACRO = 'MAX_NUM'
 ARRAY_SIZE_MACRO = 'ARRAY_SIZE'
 POINTER_SIZE_MACRO = 'POINTER_SIZE'
+FUEL_MACRO = 'FUEL'
 
+FAKE_LIBC = os.path.dirname \
+			(os.path.dirname \
+    		(os.path.dirname(__file__))) + '/Fake_libc/fake_libc_include'
+
+
+def parseFile(file, fakelib=FAKE_LIBC):
+	ast = parse_file(file, use_cpp=True,
+				cpp_path='gcc',
+				cpp_args=['-E', f'-I{fakelib}'])
+	return ast
 
 def defineMacro(label, value):
 	return f'#define {label} {value}\n'
