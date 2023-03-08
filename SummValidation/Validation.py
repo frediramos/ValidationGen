@@ -64,9 +64,6 @@ class ValidationGenerator(CGenerator):
 		headers += self.genMacros(ARRAY_SIZE_MACRO, self.arraysize)
 		headers += self.genMacros(MAX_MACRO, self.maxnum)
 
-		headers +=  StructVisitor(self.tmp_concrete).symbolic_structs()
-		headers +=  StructVisitor(self.tmp_summary).symbolic_structs()
-
 		return headers
 
 	
@@ -150,10 +147,15 @@ class ValidationGenerator(CGenerator):
 			#Gen test definitions and calls from main
 			test_defs, main_body = self.genTests(args, ret_type)
 
+			#Struct builder functions (if exist)
+			structs =  StructVisitor(self.tmp_concrete).symbolic_structs()
+			structs +=  StructVisitor(self.tmp_summary).symbolic_structs()
+
+			#Create main() body
 			block = Compound(main_body)
 			main_ast = FuncDef(main, None, block, None)
 		
-			gen_ast = FileAST(function_defs + test_defs)
+			gen_ast = FileAST(structs + function_defs + test_defs)
 			gen_ast.ext.append(main_ast)
 
 			#Generate string from ast

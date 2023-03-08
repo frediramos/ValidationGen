@@ -65,7 +65,7 @@ class PtrFieldGen(ArrayGen):
             else:
                 rvalue = self.init_struct_rvalue(self.vartype)
         else:
-            rvalue = self.symbolic_rvalue(self.vartype)
+            rvalue = self.symbolic_rvalue(Constant('string', f'\"{self.field}\"'))
         
         return [Assignment(op='=', lvalue=lvalue, rvalue=rvalue)]             
 

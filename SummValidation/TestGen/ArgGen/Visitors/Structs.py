@@ -19,7 +19,7 @@ class StructVisitor(NodeVisitor):
 
 		self.structs = vis.getStructs()
 		self.aliases = vis.getAliases()
-
+		self.structDefs = vis.getDefs()
 	
 	#Arguments of init function
 	# only 'fuel' arg so far
@@ -90,8 +90,12 @@ class StructVisitor(NodeVisitor):
 	
 	#Create functions do instantiate all structs
 	def symbolic_structs(self):
-		return [s for s in map(lambda x : self.init_function(x, self.structs[x],
-		self.structs, self.aliases), self.structs) if s is not None] 
+
+		code = [s for s in map(lambda x : self.init_function(
+				x, self.structs[x], self.structs, self.aliases),
+				self.structs) if s is not None] 
+
+		return self.structDefs + code
 	
 
 
@@ -104,12 +108,16 @@ class StructParser(NodeVisitor):
 		#Typedefed structs
 		self.aliases = {}
 		self.structs = {}
+		self.structDefs = []
 
 	def getStructs(self):
 		return self.structs
 	
 	def getAliases(self):
 		return self.aliases
+	
+	def getDefs(self):
+		return self.structDefs
 
 	def visit(self, node):
 		if node is not None: 
@@ -119,7 +127,10 @@ class StructParser(NodeVisitor):
 		self.visit(node.type)
 
 	def visit_Struct(self, node):
-		self.structs[node.name] = node.decls
+		if node.decls is not None:
+			self.structs[node.name] = node.decls
+			self.structDefs.append(node)
+
 
 	def visit_Typedef(self, node):
 		visitor = TypeDefVisitor()

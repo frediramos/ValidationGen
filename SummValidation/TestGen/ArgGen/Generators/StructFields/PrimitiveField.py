@@ -18,7 +18,7 @@ class PrimitiveFieldGen(DefaultGen):
         name = f'struct_{self.struct_name}_instance' 
 
         #Make symbolic type
-        rvalue = self.symbolic_rvalue(self.vartype)
+        rvalue = self.symbolic_rvalue(Constant('string', f'\"{self.field}\"'))
 
         #struct->field
         lvalue = StructRef(name = ID(f'{name}'), type='->', field=ID(f'{self.field}'))
