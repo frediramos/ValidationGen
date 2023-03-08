@@ -11,7 +11,7 @@ FUEL_MACRO = 'FUEL'
 
 FAKE_LIBC = os.path.dirname \
 			(os.path.dirname \
-    		(os.path.dirname(__file__))) + '/Fake_libc/fake_libc_include'
+			(os.path.dirname(__file__))) + '/Fake_libc/fake_libc_include'
 
 
 def parseFile(file, fakelib=FAKE_LIBC):
