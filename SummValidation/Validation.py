@@ -4,15 +4,11 @@ from pycparser import c_generator
 from pycparser.c_ast import *
 
 from . CGenerator import CGenerator
-
 from SummValidation.Utils import * 
-
 from SummValidation.APIGen import API_Gen
 from SummValidation.APIGen import API
-
 from SummValidation.FParser import FunctionException
 from SummValidation.FParser import FunctionParser
-
 from SummValidation.TestGen import TestGen
 from SummValidation.TestGen.ArgGen.Visitors.Structs import StructVisitor
 
