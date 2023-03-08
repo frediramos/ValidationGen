@@ -57,7 +57,6 @@ def parse_config(conf):
 	max_num = None
 	summ_name = None
 	func_name = None
-	omit = None
 
 	for l in lines:
 		l = l.strip()
@@ -68,9 +67,6 @@ def parse_config(conf):
 		if 'max_num' in split[0]:
 			max_num = [size for size in map(lambda x: int(x), split[1:])]
 
-		if 'omit' in split[0]:
-			omit = [n for n in split[1:]]		
-
 		if 'summ_name' in split[0]:
 			if len(split) == 2:
 				summ_name = split[1]
@@ -79,7 +75,7 @@ def parse_config(conf):
 			if len(split) == 2:
 				func_name = split[1]
 
-	return array_size, max_num, summ_name, func_name, omit
+	return array_size, max_num, summ_name, func_name
 
 if __name__ == "__main__":
 
@@ -102,8 +98,7 @@ if __name__ == "__main__":
 
 	if config_file:
 		conf_arraysize, conf_maxvalue,\
-		conf_summ_name, conf_func_name,\
-		conf_omit = parse_config(config_file)
+		conf_summ_name, conf_func_name, = parse_config(config_file)
 
 		if conf_arraysize:
 			arraysize = conf_arraysize
