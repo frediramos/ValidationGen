@@ -1,19 +1,16 @@
-import os
 from pycparser import parse_file
 
 from SummValidation.TestGen.ArgGen import Symbolic_Args
+from SummValidation.Utils import utils
 
 from .FunctionException import FunctionException
-from .FunctionVisitors import InitialVisitor, ReturnTypeVisior
+from .FunctionVisitors import FunctionVisitor, ReturnTypeVisior
 
 class FunctionParser():
 	
-	def _parse_file(self, file:str, fakelib:str) -> dict:
-		ast = parse_file(file, use_cpp=True,
-				cpp_path='gcc',
-				cpp_args=['-E', f'-I{fakelib}'])
-
-		vis = InitialVisitor(ast, file)
+	def getFunctions(self, file:str) -> dict:
+		ast = utils.parseFile(file)
+		vis = FunctionVisitor(ast, file)
 		functions = vis.functions() 
 		return functions
 
@@ -25,13 +22,12 @@ class FunctionParser():
 
 		self.cnctr_functions = None
 		self.summ_functions = None
-		self.fakelib =  f'{os.path.dirname(os.path.realpath(__file__))}/../../Fake_libc/fake_libc_include'
 
 		if self.concrete:	
-			self.cnctr_functions = self._parse_file(self.concrete, self.fakelib)
+			self.cnctr_functions = self.getFunctions(self.concrete)
 
 		if self.summary:	
-			self.summ_functions = self._parse_file(self.summary, self.fakelib)
+			self.summ_functions = self.getFunctions(self.summary)
 
 
 	#Parse target functions from the given files

@@ -11,6 +11,9 @@ class CGenerator:
 		self.outputfile = outputfile
 		self.tmp_files = []
 
+		self.tmp_concrete = self.add_fake_include(concrete_file)
+		self.tmp_summary = self.add_fake_include(summary_file)
+
 	def add_fake_include(self, file):
 		fake_include = '#include <stdlib.h>\n'
 

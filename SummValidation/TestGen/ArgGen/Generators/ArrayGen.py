@@ -2,7 +2,6 @@ from pycparser.c_ast import *
 from .DefaultGen import DefaultGen
 
 
-
 #Create a symbolic N-dimension array
 class ArrayGen(DefaultGen):
     def __init__ (self, name, vartype, array):

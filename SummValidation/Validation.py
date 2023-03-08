@@ -4,13 +4,17 @@ from pycparser import c_generator
 from pycparser.c_ast import *
 
 from . CGenerator import CGenerator
-from SummValidation.APIGen import API_Gen
-from SummValidation.APIGen import API
-from SummValidation.TestGen import TestGen
 
 from SummValidation.Utils import * 
+
+from SummValidation.APIGen import API_Gen
+from SummValidation.APIGen import API
+
 from SummValidation.FParser import FunctionException
 from SummValidation.FParser import FunctionParser
+
+from SummValidation.TestGen import TestGen
+from SummValidation.TestGen.ArgGen.Visitors.Structs import StructVisitor
 
 
 class ValidationGenerator(CGenerator):
@@ -63,6 +67,10 @@ class ValidationGenerator(CGenerator):
 		#Macros
 		headers += self.genMacros(ARRAY_SIZE_MACRO, self.arraysize)
 		headers += self.genMacros(MAX_MACRO, self.maxnum)
+
+		headers +=  StructVisitor(self.tmp_concrete).symbolic_structs()
+		headers +=  StructVisitor(self.tmp_summary).symbolic_structs()
+
 		return headers
 
 	
@@ -126,11 +134,9 @@ class ValidationGenerator(CGenerator):
 	#Generate summary validation test
 	def gen(self):
 		try:
-			tmp_concrete = self.add_fake_include(self.concrete_file)
-			tmp_summary = self.add_fake_include(self.summary_file)
 
 			try:
-				fparser = FunctionParser(tmp_concrete, tmp_summary)
+				fparser = FunctionParser(self.tmp_concrete, self.tmp_summary)
 				cname, sname,	\
 				function_defs, args,	\
 				ret_type = fparser.parse(self.cncrt_name, self.summ_name)
@@ -160,11 +166,11 @@ class ValidationGenerator(CGenerator):
 
 			file_name = os.path.basename(__file__)
 			self.write_to_file(generated_string, header, file_name)
-			self.remove_files(tmp_concrete, tmp_summary)
+			self.remove_files(self.tmp_concrete, self.tmp_summary)
 			return self.outputfile
 
 		except Exception:
-			self.remove_files(tmp_concrete, tmp_summary)
+			self.remove_files(self.tmp_concrete, self.tmp_summary)
 			print(traceback.format_exc())
 			return None
 

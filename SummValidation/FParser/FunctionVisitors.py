@@ -30,7 +30,7 @@ class ReturnTypeVisior(NodeVisitor):
 		self.name = node.names[0]
 
 
-class InitialVisitor(NodeVisitor):
+class FunctionVisitor(NodeVisitor):
 
 	def __init__ (self, ast, filename):
 
