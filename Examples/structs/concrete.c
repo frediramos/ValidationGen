@@ -1,6 +1,7 @@
 struct a
 {
     int value;
+    struct a* ptr;
 };
 
 

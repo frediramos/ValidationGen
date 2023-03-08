@@ -131,10 +131,11 @@ if __name__ == "__main__":
 		sys.exit(msg)
 
 
-	valgenerator = ValidationGenerator(concrete_function, target_summary,
-					 			 		outputfile, arraysize,
-										maxvalue, memory,
-										func_name, summ_name, noapi)
+	valgenerator = ValidationGenerator(concrete_function, target_summary, outputfile,
+				    					arraysize=arraysize, maxnum=maxvalue,
+									    memory=memory,
+										cncrt_name=func_name, summ_name=summ_name,
+										no_api=noapi)
 	file = valgenerator.gen()
 
 	assert(file == outputfile)
