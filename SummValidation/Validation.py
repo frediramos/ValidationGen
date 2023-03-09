@@ -16,7 +16,8 @@ from SummValidation.TestGen.ArgGen.Visitors.Structs import StructVisitor
 class ValidationGenerator(CGenerator):
 	def __init__(self, concrete_file, summary_file,
 				 outputfile,
-				 arraysize = [5], maxnum = [], pointersize=5,
+				 arraysize = [5], maxnum = [],
+				 pointersize=5, fuel = 5,
 				 memory = False,
 				 cncrt_name = None, summ_name=None, no_api=False,
 				 fakelib=None):
@@ -26,6 +27,8 @@ class ValidationGenerator(CGenerator):
 		self.arraysize = arraysize
 		self.maxnum = maxnum
 		self.pointersize = pointersize
+		self.fuel = fuel
+
 		self.memory = memory
 
 		#Summary name (if summ is not isolated in a file, e,g in a library)
@@ -63,6 +66,7 @@ class ValidationGenerator(CGenerator):
 			
 		#Macros
 		headers += defineMacro(POINTER_SIZE_MACRO, self.pointersize)
+		headers += defineMacro(FUEL_MACRO, self.fuel)
 		headers += self.genMacros(ARRAY_SIZE_MACRO, self.arraysize)
 		headers += self.genMacros(MAX_MACRO, self.maxnum)
 
