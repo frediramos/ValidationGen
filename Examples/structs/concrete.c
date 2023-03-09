@@ -5,6 +5,6 @@ struct a
 };
 
 
-int foo(){
+int foo(struct a a){
     return 0;
 }
