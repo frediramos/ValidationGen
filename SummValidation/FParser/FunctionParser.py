@@ -66,7 +66,8 @@ class FunctionParser():
 		if summ_def:
 			summ_args, _ = self.get_args(summ_def)
 		
-		if cncrt_args != summ_args:
+		if not self.summary and not self.concrete\
+			and cncrt_args != summ_args:
 			message = (
 				"Arguments do not match!\n"
 				f"Summary path: \'{self.summary}\'\n"

@@ -57,6 +57,7 @@ def parse_config(conf):
 	max_num = None
 	summ_name = None
 	func_name = None
+	compile_arch = None
 
 	for l in lines:
 		l = l.strip()
@@ -74,8 +75,13 @@ def parse_config(conf):
 		if 'func_name' in split[0]:
 			if len(split) == 2:
 				func_name = split[1]
+		
+		if 'compile_arch' in split[0]:
+			if len(split) == 2:
+				compile_arch = split[1]
+		
 
-	return array_size, max_num, summ_name, func_name
+	return array_size, max_num, summ_name, func_name, compile_arch
 
 if __name__ == "__main__":
 
@@ -98,7 +104,7 @@ if __name__ == "__main__":
 
 	if config_file:
 		conf_arraysize, conf_maxvalue,\
-		conf_summ_name, conf_func_name, = parse_config(config_file)
+		conf_summ_name, conf_func_name, conf_compile_arch = parse_config(config_file)
 
 		if conf_arraysize:
 			arraysize = conf_arraysize
@@ -111,6 +117,9 @@ if __name__ == "__main__":
 
 		if conf_func_name:
 			func_name = conf_func_name		
+		
+		if conf_compile_arch:
+			compile_arch = conf_compile_arch
 
 	if not concrete_function and not target_summary:
 		sys.exit('ERROR: At least the code for a concrete function or summary MUST be provided')

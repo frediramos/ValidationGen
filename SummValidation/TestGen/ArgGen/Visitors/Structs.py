@@ -12,14 +12,19 @@ from ..Generators.StructFields.PtrField import PtrFieldGen
 #Generates the functions to init symbolic structs
 class StructVisitor(NodeVisitor):
 	def __init__ (self, file:str):
+		
+		self.structs = {}
+		self.aliases = {}
+		self.structDefs = []
 
-		ast = utils.parseFile(file)
-		vis = StructParser()
-		vis.visit(ast)
+		if file:
+			ast = utils.parseFile(file)
+			vis = StructParser()
+			vis.visit(ast)
 
-		self.structs = vis.getStructs()
-		self.aliases = vis.getAliases()
-		self.structDefs = vis.getDefs()
+			self.structs = vis.getStructs()
+			self.aliases = vis.getAliases()
+			self.structDefs = vis.getDefs()
 	
 	#Arguments of init function
 	# only 'fuel' arg so far
