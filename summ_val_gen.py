@@ -55,12 +55,19 @@ def parse_config(conf):
 
 	array_size = None
 	max_num = None
+	summ_file = None
+	func_file = None
 	summ_name = None
 	func_name = None
 	compile_arch = None
+	lib = None
 
 	for l in lines:
 		l = l.strip()
+
+		if l.startswith('\\\\'):
+			continue
+
 		split = l.split(' ')
 		if 'array_size' in split[0]:
 			array_size = [size for size in map(lambda x: int(x), split[1:])]
@@ -80,11 +87,26 @@ def parse_config(conf):
 			if len(split) == 2:
 				compile_arch = split[1]
 		
+		if 'summ_file' in split[0]:
+			if len(split) == 2:
+				summ_file = split[1]
 
-	return array_size, max_num, summ_name, func_name, compile_arch
+		if 'func_file' in split[0]:
+			if len(split) == 2:
+				func_file = split[1]				
+
+		if 'lib' in split[0]:
+			if len(split) == 2:
+				lib = split[1]				
+
+	return 	array_size, max_num,\
+			summ_name, func_name,\
+			summ_file, func_file,\
+			compile_arch, lib
+
+
 
 if __name__ == "__main__":
-
 	
 	#Command line arguments
 	args = get_cmd_args()
@@ -104,7 +126,9 @@ if __name__ == "__main__":
 
 	if config_file:
 		conf_arraysize, conf_maxvalue,\
-		conf_summ_name, conf_func_name, conf_compile_arch = parse_config(config_file)
+		conf_summ_name, conf_func_name,\
+		conf_summ_file, conf_func_file,\
+		conf_compile_arch, conf_lib = parse_config(config_file)
 
 		if conf_arraysize:
 			arraysize = conf_arraysize
@@ -120,6 +144,15 @@ if __name__ == "__main__":
 		
 		if conf_compile_arch:
 			compile_arch = conf_compile_arch
+
+		if conf_summ_file:
+			target_summary = conf_summ_file
+
+		if conf_func_file:
+			concrete_function = conf_func_file
+		
+		if conf_lib:
+			lib_paths = conf_lib
 
 	if not concrete_function and not target_summary:
 		sys.exit('ERROR: At least the code for a concrete function or summary MUST be provided')
@@ -145,6 +178,6 @@ if __name__ == "__main__":
 	assert(file == outputfile)
 
 	if compile_arch:
-		bin_name = outputfile[:-2] #Remove '.c'
+		bin_name = outputfile[:-2] + '.test' #Remove '.c' + .test
 		comp = CCompiler(compile_arch, outputfile, bin_name, lib_paths)
 		comp.compile()
