@@ -29,7 +29,7 @@ class ArrayGen(DefaultGen):
         
         typedecl = TypeDecl(name, [], IdentifierType(names=[self.vartype]))
 
-        size = BinaryOp('+', self._size(self.sizes[-1]) , Constant('int', str(1)))
+        size = self._size(self.sizes[-1])
         array = ArrayDecl(typedecl, size, [])
 
         for i in range(self.dimension-2, -1, -1):
