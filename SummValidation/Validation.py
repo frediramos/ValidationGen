@@ -16,7 +16,7 @@ from SummValidation.TestGen.ArgGen.Visitors.Structs import StructVisitor
 class ValidationGenerator(CGenerator):
 	def __init__(self, concrete_file, summary_file,
 				 outputfile,
-				 arraysize = [5], maxnum = [],
+				 arraysize = [5], maxnum = [], maxnames = [],
 				 pointersize=5, fuel = 5,
 				 memory = False,
 				 cncrt_name = None, summ_name=None, no_api=False,
@@ -26,6 +26,7 @@ class ValidationGenerator(CGenerator):
 
 		self.arraysize = arraysize
 		self.maxnum = maxnum
+		self.maxnames = maxnames
 		self.pointersize = pointersize
 		self.fuel = fuel
 
@@ -126,7 +127,7 @@ class ValidationGenerator(CGenerator):
 		 		self.cncrt_name, self.summ_name,
 		   		self.memory)
 
-		return gen.createTest(testname, array_size, max_value, id)
+		return gen.createTest(testname, array_size, max_value, self.maxnames, id)
 			
 
 

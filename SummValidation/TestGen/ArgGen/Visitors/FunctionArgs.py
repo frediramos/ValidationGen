@@ -7,7 +7,7 @@ from ..Generators.Types.StructType import StructTypeGen
 
 class ArgVisitor(NodeVisitor):
 
-    def __init__ (self, sizeMacro = None, max_macro = None):
+    def __init__ (self, sizeMacro = None, max_macro = None, max_names = []):
 
         #Store argument node (Decl)
         self.node = None
@@ -18,6 +18,7 @@ class ArgVisitor(NodeVisitor):
         
         self.sizeMacro = sizeMacro
         self.max_macro = max_macro
+        self.max_names = max_names
 
         #ID object
         self.argname = None 
@@ -74,7 +75,7 @@ class ArgVisitor(NodeVisitor):
             
             #Primitive Type
             else:
-                generator = PrimitiveTypeGen(argname, self.argtype, self.max_macro)
+                generator = PrimitiveTypeGen(argname, self.argtype, self.max_macro, self.max_names)
                 self.code = generator.gen()
                 return
         

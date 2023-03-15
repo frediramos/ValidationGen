@@ -22,10 +22,10 @@ class TestGen:
         return Decl(ret_name, [], [], [], lvalue, rvalue, None)
 
 
-    def createTest(self, name, size_macro, max_macro, id):
+    def createTest(self, name, size_macro, max_macro, max_names, id):
 
         #Helper objects
-        sym_args_gen = Symbolic_Args(self.args, size_macro, max_macro)
+        sym_args_gen = Symbolic_Args(self.args, size_macro, max_macro, max_names)
         api_gen = API_Gen()
 
         #Create symbolic args

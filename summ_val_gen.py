@@ -29,6 +29,9 @@ def get_cmd_args():
 	parser.add_argument('--maxvalue', metavar='value', nargs='+', type=int, required=False, default=[],
 						help='Provide an upper bound for numeric values')
 
+	parser.add_argument('--maxnames', metavar='name', nargs='+', type=int, required=False, default=[],
+						help='Numeric value names to be constrained')
+
 	parser.add_argument('--lib', metavar='path', nargs='+', type=str, required=False,
 						help='Path to external files needed to compile the test binary')
 
@@ -55,6 +58,7 @@ def parse_config(conf):
 
 	array_size = None
 	max_num = None
+	max_names = None
 	summ_file = None
 	func_file = None
 	summ_name = None
@@ -74,6 +78,9 @@ def parse_config(conf):
 
 		if 'max_num' in split[0]:
 			max_num = [size for size in map(lambda x: int(x), split[1:])]
+
+		if 'max_names' in split[0]:
+			max_names = [n for n in split[1:]]
 
 		if 'summ_name' in split[0]:
 			if len(split) == 2:
@@ -99,10 +106,10 @@ def parse_config(conf):
 			if len(split) == 2:
 				lib = split[1]				
 
-	return 	array_size, max_num,\
+	return 	array_size, max_num, max_names,\
 			summ_name, func_name,\
 			summ_file, func_file,\
-			compile_arch, lib
+			compile_arch, lib, 
 
 
 
@@ -116,6 +123,7 @@ if __name__ == "__main__":
 	outputfile = args.o
 	arraysize = args.arraysize
 	maxvalue = args.maxvalue
+	max_names = args.maxnames
 	summ_name = args.summ_name
 	func_name = args.func_name
 	compile_arch = args.compile
@@ -123,9 +131,9 @@ if __name__ == "__main__":
 	memory = args.memory
 	config_file = args.config
 	noapi = args.noAPI
-
+	
 	if config_file:
-		conf_arraysize, conf_maxvalue,\
+		conf_arraysize, conf_maxvalue, conf_max_names,\
 		conf_summ_name, conf_func_name,\
 		conf_summ_file, conf_func_file,\
 		conf_compile_arch, conf_lib = parse_config(config_file)
@@ -154,6 +162,10 @@ if __name__ == "__main__":
 		if conf_lib:
 			lib_paths = conf_lib
 
+		if conf_max_names:
+			max_names = conf_max_names
+
+
 	if not concrete_function and not target_summary:
 		sys.exit('ERROR: At least the code for a concrete function or summary MUST be provided')
 
@@ -169,7 +181,7 @@ if __name__ == "__main__":
 
 
 	valgenerator = ValidationGenerator(concrete_function, target_summary, outputfile,
-				    					arraysize=arraysize, maxnum=maxvalue,
+				    					arraysize=arraysize, maxnum=maxvalue, maxnames=max_names,
 									    memory=memory,
 										cncrt_name=func_name, summ_name=summ_name,
 										no_api=noapi)
