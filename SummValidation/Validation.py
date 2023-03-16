@@ -171,13 +171,13 @@ class ValidationGenerator(CGenerator):
 
 			#Main function to run the tests	
 			main = createFunction(name='main',args=None, returnType='int')
-			
-			#Gen test definitions and calls from main
-			test_defs, main_body = self.genTests(args, ret_type)
 
 			#Struct builder functions (if exist)
 			structs =  StructVisitor(self.tmp_concrete).symbolic_structs()
 			structs +=  StructVisitor(self.tmp_summary).symbolic_structs()
+			
+			#Gen test definitions and calls from main
+			test_defs, main_body = self.genTests(args, ret_type)
 
 			#Create main() body
 			block = Compound(main_body)
