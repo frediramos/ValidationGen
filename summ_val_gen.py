@@ -66,20 +66,12 @@ def parse_array_sizes(line):
 
 
 
-def parse_config(conf):
+def parse_config(conf) -> dict:
 	f = open(conf, "r")
 	lines = f.readlines()
 	f.close()
 
-	array_size = None
-	max_num = None
-	max_names = None
-	summ_file = None
-	func_file = None
-	summ_name = None
-	func_name = None
-	compile_arch = None
-	lib = None
+	config = {}
 
 	for l in lines:
 		l = l.strip()
@@ -89,42 +81,40 @@ def parse_config(conf):
 
 		split = l.split(' ')
 		if 'array_size' in split[0]:
-			array_size = parse_array_sizes(l)
+			config['array_size'] = parse_array_sizes(l)
 
 		if 'max_num' in split[0]:
-			max_num = [size for size in map(lambda x: int(x), split[1:])]
-
-		if 'max_names' in split[0]:
-			max_names = [n for n in split[1:]]
+			config['max_num'] = [size for size in map(lambda x: int(x), split[1:])]
 
 		if 'summ_name' in split[0]:
 			if len(split) == 2:
-				summ_name = split[1]
+				config['summ_name'] = split[1]
 
 		if 'func_name' in split[0]:
 			if len(split) == 2:
-				func_name = split[1]
+				config['func_name'] = split[1]
 		
 		if 'compile_arch' in split[0]:
 			if len(split) == 2:
-				compile_arch = split[1]
+				config['compile_arch'] = split[1]
 		
 		if 'summ_file' in split[0]:
 			if len(split) == 2:
-				summ_file = split[1]
+				config['summ_file'] = split[1]
 
 		if 'func_file' in split[0]:
 			if len(split) == 2:
-				func_file = split[1]				
+				config['func_file'] = split[1]				
 
 		if 'lib' in split[0]:
 			if len(split) == 2:
-				lib = split[1]				
+				config['lib'] = split[1]
 
-	return 	array_size, max_num, max_names,\
-			summ_name, func_name,\
-			summ_file, func_file,\
-			compile_arch, lib, 
+		if 'max_names' in split[0]:
+			config['max_names'] = [n for n in split[1:]]
+				
+
+	return config
 
 
 
@@ -148,37 +138,36 @@ if __name__ == "__main__":
 	noapi = args.noAPI
 	
 	if config_file:
-		conf_arraysize, conf_maxvalue, conf_max_names,\
-		conf_summ_name, conf_func_name,\
-		conf_summ_file, conf_func_file,\
-		conf_compile_arch, conf_lib = parse_config(config_file)
-
-		if conf_arraysize:
-			arraysize = conf_arraysize
-
-		if conf_maxvalue:
-			maxvalue = conf_maxvalue
-
-		if conf_summ_name:
-			summ_name = conf_summ_name			
-
-		if conf_func_name:
-			func_name = conf_func_name		
 		
-		if conf_compile_arch:
-			compile_arch = conf_compile_arch
+		config = parse_config(config_file)
+		keys = config.keys()
 
-		if conf_summ_file:
-			target_summary = conf_summ_file
+		if 'array_size' in keys:
+			arraysize = config['array_size']
 
-		if conf_func_file:
-			concrete_function = conf_func_file
+		if 'max_num' in keys:
+			maxvalue = config['max_num']
+
+		if 'summ_name' in keys:
+			summ_name = config['summ_name']			
+
+		if 'func_name' in keys:
+			func_name = config['func_name']			
 		
-		if conf_lib:
-			lib_paths = conf_lib
+		if 'compile_arch' in keys:
+			compile_arch = config['compile_arch']		
 
-		if conf_max_names:
-			max_names = conf_max_names
+		if 'summ_file' in keys:
+			target_summary = config['summ_file']	
+
+		if 'func_file' in keys:
+			concrete_function = config['func_file']	
+		
+		if 'lib' in keys:
+			lib_paths = config['lib']	
+
+		if 'max_names' in keys:
+			max_names = config['max_names']
 
 
 	if not concrete_function and not target_summary:
