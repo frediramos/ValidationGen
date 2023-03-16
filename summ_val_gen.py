@@ -112,8 +112,7 @@ def parse_config(conf) -> dict:
 
 		if 'max_names' in split[0]:
 			config['max_names'] = [n for n in split[1:]]
-				
-
+			
 	return config
 
 
