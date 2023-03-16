@@ -22,8 +22,10 @@ class Symbolic_Args():
 
         #Visit arguments 
         for arg in self.args:
+            
+            size = self._get_size()
 
-            vis = ArgVisitor(self.size_macro, self.max_macro, self.max_names)   
+            vis = ArgVisitor(size, self.max_macro, self.max_names)   
             vis.visit(arg)
             code = vis.gen_code()
             typ = vis.get_type()
@@ -34,6 +36,15 @@ class Symbolic_Args():
             
             self.args_dict[vis.argname] = typ
 
+    def _get_size(self):
+        if isinstance(self.size_macro, list):
+            if len(self.size_macro) > 1:
+                size = self.size_macro.pop(0)
+            else:
+                size = self.size_macro[0]
+        else:
+            size = self.size_macro
+        return size
 
     def create_symbolic_args(self):
         return self.block

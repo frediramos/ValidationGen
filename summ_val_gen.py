@@ -2,6 +2,9 @@
 
 import argparse
 import sys
+import ast
+import re
+
 from SummValidation import ValidationGenerator, CCompiler
 
 
@@ -51,6 +54,18 @@ def get_cmd_args():
 	return parser.parse_args()
 
 
+def parse_array_sizes(line):
+	
+	if '[' in line:
+		size_sets  = re.findall(r'\[.+\]', line)
+		return [s for s in map(lambda x: ast.literal_eval(x), size_sets)]
+
+	else:
+		split = line.split(' ')
+		return [size for size in map(lambda x: int(x), split[1:])]
+
+
+
 def parse_config(conf):
 	f = open(conf, "r")
 	lines = f.readlines()
@@ -74,7 +89,7 @@ def parse_config(conf):
 
 		split = l.split(' ')
 		if 'array_size' in split[0]:
-			array_size = [size for size in map(lambda x: int(x), split[1:])]
+			array_size = parse_array_sizes(l)
 
 		if 'max_num' in split[0]:
 			max_num = [size for size in map(lambda x: int(x), split[1:])]

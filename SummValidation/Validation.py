@@ -68,8 +68,8 @@ class ValidationGenerator(CGenerator):
 		#Macros
 		headers += defineMacro(POINTER_SIZE_MACRO, self.pointersize)
 		headers += defineMacro(FUEL_MACRO, self.fuel)
-		headers += self.genMacros(ARRAY_SIZE_MACRO, self.arraysize)
-		headers += self.genMacros(MAX_MACRO, self.maxnum)
+		headers += self.genMacros(ARRAY_SIZE_MACRO, self.arraysize)[0]
+		headers += self.genMacros(MAX_MACRO, self.maxnum)[0]
 
 		return headers
 
@@ -77,10 +77,27 @@ class ValidationGenerator(CGenerator):
 
 	def genMacros(self, macro, values =[]):
 		macros = []
+		macro_names = []
 		for i, v in enumerate(values):
-			string = defineMacro(f'{macro}_{i+1}', v)
-			macros.append(string)		
-		return macros
+			
+			if isinstance(v, list):
+				stringlst = []
+				
+				for x, y in enumerate(v):
+					name = f'{macro}_{i+1}_VAR{x+1}'
+					stringlst.append(defineMacro(name, y))
+					macro_names.append(name)
+
+				string = ''.join(stringlst)
+			
+			else:
+				name = f'{macro}_{i+1}'
+				string = defineMacro(name, v)
+				macro_names.append(name)
+			
+			macros.append(string)	
+
+		return macros, macro_names
 
 
 	#Generate the tests code
@@ -117,7 +134,12 @@ class ValidationGenerator(CGenerator):
 		
 		#Select Macro id for arraysize
 		arrId = min(id, len(self.arraysize))
-		array_size = f'{ARRAY_SIZE_MACRO}_{arrId}'
+
+		if isinstance(self.arraysize[id-1], list):
+			array_size = self.genMacros(ARRAY_SIZE_MACRO, self.arraysize)[1]
+
+		else:
+			array_size = f'{ARRAY_SIZE_MACRO}_{arrId}'
 
 		#Select Macro id for Max value
 		max_value = f'{MAX_MACRO}_{id}' if id <= len(self.maxnum) else None
@@ -125,16 +147,15 @@ class ValidationGenerator(CGenerator):
 		#Call Gen visitor
 		gen = TestGen(args, ret_type,
 		 		self.cncrt_name, self.summ_name,
-		   		self.memory)
+		   		self.memory, self.maxnames)
 
-		return gen.createTest(testname, array_size, max_value, self.maxnames, id)
+		return gen.createTest(testname, array_size, max_value, id)
 			
 
 
 	#Generate summary validation test
 	def gen(self):
 		try:
-
 			try:
 				fparser = FunctionParser(self.tmp_concrete, self.tmp_summary)
 				cname, sname,	\
@@ -169,8 +190,7 @@ class ValidationGenerator(CGenerator):
 			generator = c_generator.CGenerator()
 			generated_string = generator.visit(gen_ast)
 
-			file_name = os.path.basename(__file__)
-			self.write_to_file(generated_string, header, file_name)
+			self.write_to_file(generated_string, header)
 			self.remove_files(self.tmp_concrete, self.tmp_summary)
 			return self.outputfile
 
