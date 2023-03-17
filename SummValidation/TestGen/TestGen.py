@@ -23,10 +23,10 @@ class TestGen:
         return Decl(ret_name, [], [], [], lvalue, rvalue, None)
 
 
-    def createTest(self, name, size_macro, max_macro, id):
+    def createTest(self, name, size_macro, null_bytes, max_macro, id):
 
         #Helper objects
-        sym_args_gen = Symbolic_Args(self.args, size_macro, max_macro, self.max_names)
+        sym_args_gen = Symbolic_Args(self.args, size_macro.copy(), null_bytes, max_macro, self.max_names)
         api_gen = API_Gen()
 
         #Create symbolic args
@@ -42,9 +42,14 @@ class TestGen:
         ]
 
         if self.memory:
+
             ptr_names = sym_args_gen.get_ptr_args()
-            for ptr in ptr_names:
-                body.append(api_gen.mem_addr(ptr, size_macro))
+            if isinstance(size_macro,list):
+                for ptr, size in zip(ptr_names, size_macro):
+                    body.append(api_gen.mem_addr(ptr, size))
+            else:
+                for ptr in ptr_names:
+                    body.append(api_gen.mem_addr(ptr, size_macro))
 
         body +=[
             self.call_function(self.cncrt_name, args_names, 'ret1', self.ret),

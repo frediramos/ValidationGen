@@ -3,10 +3,11 @@ from pycparser.c_ast import *
 from . Visitors.FunctionArgs import ArgVisitor
 
 class Symbolic_Args():
-    def __init__(self, args, size_macro = None,
+    def __init__(self, args, size_macro = None, null_bytes = [],
                   max_macro = None, max_names = []):
         self.args = args
         self.size_macro = size_macro
+        self.null_bytes = null_bytes
         self.max_macro = max_macro
         self.max_names = max_names
         
@@ -23,9 +24,10 @@ class Symbolic_Args():
         #Visit arguments 
         for arg in self.args:
             
-            size = self._get_size()
+            size = self._get_val(self.size_macro)
+            null = self._get_val(self.null_bytes)
 
-            vis = ArgVisitor(size, self.max_macro, self.max_names)   
+            vis = ArgVisitor(size, null, self.max_macro, self.max_names)   
             vis.visit(arg)
             code = vis.gen_code()
             typ = vis.get_type()
@@ -36,15 +38,16 @@ class Symbolic_Args():
             
             self.args_dict[vis.argname] = typ
 
-    def _get_size(self):
-        if isinstance(self.size_macro, list):
-            if len(self.size_macro) > 1:
-                size = self.size_macro.pop(0)
+    def _get_val(self, arr):
+        if isinstance(arr, list):
+            if len(arr) > 1:
+                return arr.pop(0)
+            elif len(arr) == 1:
+                return arr[0]
             else:
-                size = self.size_macro[0]
+                return arr
         else:
-            size = self.size_macro
-        return size
+            return arr
 
     def create_symbolic_args(self):
         return self.block

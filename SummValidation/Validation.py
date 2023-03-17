@@ -16,7 +16,8 @@ from SummValidation.TestGen.ArgGen.Visitors.Structs import StructVisitor
 class ValidationGenerator(CGenerator):
 	def __init__(self, concrete_file, summary_file,
 				 outputfile,
-				 arraysize = [5], maxnum = [], maxnames = [],
+				 arraysize = [5], nullbytes = [],
+				 maxnum = [], maxnames = [],
 				 pointersize=5, fuel = 5,
 				 memory = False,
 				 cncrt_name = None, summ_name=None, no_api=False,
@@ -25,6 +26,7 @@ class ValidationGenerator(CGenerator):
 		super().__init__(outputfile, concrete_file, summary_file, fakelib)
 
 		self.arraysize = arraysize
+		self.nullbytes = nullbytes 
 		self.maxnum = maxnum
 		self.maxnames = maxnames
 		self.pointersize = pointersize
@@ -68,8 +70,8 @@ class ValidationGenerator(CGenerator):
 		#Macros
 		headers += defineMacro(POINTER_SIZE_MACRO, self.pointersize)
 		headers += defineMacro(FUEL_MACRO, self.fuel)
-		headers += self.genMacros(ARRAY_SIZE_MACRO, self.arraysize)[0]
-		headers += self.genMacros(MAX_MACRO, self.maxnum)[0]
+		headers += self.genMacros(ARRAY_SIZE_MACRO, self.arraysize)
+		headers += self.genMacros(MAX_MACRO, self.maxnum)
 
 		return headers
 
@@ -77,7 +79,6 @@ class ValidationGenerator(CGenerator):
 
 	def genMacros(self, macro, values =[]):
 		macros = []
-		macro_names = []
 		for i, v in enumerate(values):
 			
 			if isinstance(v, list):
@@ -86,18 +87,15 @@ class ValidationGenerator(CGenerator):
 				for x, y in enumerate(v):
 					name = f'{macro}_{i+1}_VAR{x+1}'
 					stringlst.append(defineMacro(name, y))
-					macro_names.append(name)
-
 				string = ''.join(stringlst)
 			
 			else:
 				name = f'{macro}_{i+1}'
 				string = defineMacro(name, v)
-				macro_names.append(name)
 			
 			macros.append(string)	
 
-		return macros, macro_names
+		return macros
 
 
 	#Generate the tests code
@@ -130,16 +128,46 @@ class ValidationGenerator(CGenerator):
 		return test_defs, main_body
 
 
-	def genTest(self, testname, args, ret_type, id):
+	def get_array_size(self, id):
 		
-		#Select Macro id for arraysize
-		arrId = min(id, len(self.arraysize))
-
-		if isinstance(self.arraysize[id-1], list):
-			array_size = self.genMacros(ARRAY_SIZE_MACRO, self.arraysize)[1]
+		if isinstance(self.arraysize[id-1], list):		
+			array_size = []
+			for x, _ in enumerate(self.arraysize[id-1]):
+				name = f'{ARRAY_SIZE_MACRO}_{id}_VAR{x+1}'
+				array_size.append(name)
 
 		else:
+			arrId = min(id, len(self.arraysize))
 			array_size = f'{ARRAY_SIZE_MACRO}_{arrId}'
+
+		return array_size
+	
+	
+	def get_null_byte(self, id):
+		if self.nullbytes:
+			
+			if id <= len(self.nullbytes):
+				position = self.nullbytes[id-1]	
+			else:
+				position = self.nullbytes[-1]
+
+			if isinstance(position, list):		
+				null_byte = []
+				for x in position:
+					null_byte.append(x)
+			else:
+				null_byte = position
+
+			return null_byte
+		
+		else:
+			return self.nullbytes
+
+
+	def genTest(self, testname, args, ret_type, id):
+
+		array_size = self.get_array_size(id)
+		null_bytes = self.get_null_byte(id)
 
 		#Select Macro id for Max value
 		max_value = f'{MAX_MACRO}_{id}' if id <= len(self.maxnum) else None
@@ -149,7 +177,7 @@ class ValidationGenerator(CGenerator):
 		 		self.cncrt_name, self.summ_name,
 		   		self.memory, self.maxnames)
 
-		return gen.createTest(testname, array_size, max_value, id)
+		return gen.createTest(testname, array_size, null_bytes, max_value, id)
 			
 
 

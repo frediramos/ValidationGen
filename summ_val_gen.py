@@ -29,6 +29,9 @@ def get_cmd_args():
 	parser.add_argument('--arraysize', metavar='value', nargs='+', type=int, required=False, default=[5],
 						help='Maximum array size of each test (default:5)')
 
+	parser.add_argument('--nullbytes', metavar='index', nargs='+', type=int, required=False, default=[],
+						help='Specify array indexes to place null bytes')
+
 	parser.add_argument('--maxvalue', metavar='value', nargs='+', type=int, required=False, default=[],
 						help='Provide an upper bound for numeric values')
 
@@ -54,11 +57,11 @@ def get_cmd_args():
 	return parser.parse_args()
 
 
-def parse_array_sizes(line):
+def parse_specific_config(line):
 	
 	if '[' in line:
-		size_sets  = re.findall(r'\[.+\]', line)
-		return [s for s in map(lambda x: ast.literal_eval(x), size_sets)]
+		size_sets  = re.findall(r'(\[([0-9]+\,{0,1})+\])+', line)
+		return [s for s in map(lambda x: ast.literal_eval(x[0]), size_sets)]
 
 	else:
 		split = line.split(' ')
@@ -81,7 +84,10 @@ def parse_config(conf) -> dict:
 
 		split = l.split(' ')
 		if 'array_size' in split[0]:
-			config['array_size'] = parse_array_sizes(l)
+			config['array_size'] = parse_specific_config(l)
+
+		if 'null_bytes' in split[0]:
+			config['null_bytes'] = parse_specific_config(l)
 
 		if 'max_num' in split[0]:
 			config['max_num'] = [size for size in map(lambda x: int(x), split[1:])]
@@ -112,7 +118,7 @@ def parse_config(conf) -> dict:
 
 		if 'max_names' in split[0]:
 			config['max_names'] = [n for n in split[1:]]
-			
+
 	return config
 
 
@@ -126,6 +132,7 @@ if __name__ == "__main__":
 	target_summary = args.summ
 	outputfile = args.o
 	arraysize = args.arraysize
+	nullbytes = args.nullbytes
 	maxvalue = args.maxvalue
 	max_names = args.maxnames
 	summ_name = args.summ_name
@@ -143,6 +150,9 @@ if __name__ == "__main__":
 
 		if 'array_size' in keys:
 			arraysize = config['array_size']
+
+		if 'null_bytes' in keys:
+			nullbytes = config['null_bytes']
 
 		if 'max_num' in keys:
 			maxvalue = config['max_num']
@@ -184,7 +194,8 @@ if __name__ == "__main__":
 
 
 	valgenerator = ValidationGenerator(concrete_function, target_summary, outputfile,
-				    					arraysize=arraysize, maxnum=maxvalue, maxnames=max_names,
+				    					arraysize=arraysize, nullbytes=nullbytes,
+										maxnum=maxvalue, maxnames=max_names,
 									    memory=memory,
 										cncrt_name=func_name, summ_name=summ_name,
 										no_api=noapi)

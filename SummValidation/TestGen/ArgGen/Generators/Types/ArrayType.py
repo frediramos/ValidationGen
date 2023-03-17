@@ -6,10 +6,11 @@ from ..ArrayGen import ArrayGen
 
 #Create a symbolic N-dimension array
 class ArrayTypeGen(ArrayGen):
-    def __init__ (self, name, vartype, array, struct=False):
+    def __init__ (self, name, vartype, array, struct=False, null=None):
         super().__init__(name, vartype, array) 
 
         self.struct = struct
+        self.null = null
 
 
     #Array[i][j] = symbolic();
@@ -53,7 +54,10 @@ class ArrayTypeGen(ArrayGen):
 
         #Terminate string with null byte ('\0')
         if self.vartype == 'char' and self.dimension == 1:
-            size = BinaryOp('-', self._size(self.sizes[-1]) , Constant('int', str(1)))
+            if not self.null:
+                size = BinaryOp('-', self._size(self.sizes[-1]) , Constant('int', str(1)))
+            else:
+                size = Constant('int', str(self.null))
             code.append(utils.terminate_string(self.argname, size))
 
         return code
