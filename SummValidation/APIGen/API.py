@@ -9,6 +9,7 @@ type_defs = [
     'typedef unsigned int size_t; \n',
     'typedef unsigned int cnstr_t; \n',
     'typedef unsigned int result_t; \n',
+    'typedef unsigned int wchar_t; \n',
     '\n'
 ]
 
