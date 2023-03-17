@@ -5,8 +5,14 @@ from . Visitors.FunctionArgs import ArgVisitor
 class Symbolic_Args():
     def __init__(self, args, size_macro = None, null_bytes = [],
                   max_macro = None, max_names = []):
+       
         self.args = args
-        self.size_macro = size_macro
+
+        if isinstance(size_macro, list):
+            self.size_macro = size_macro.copy()
+        else:
+            self.size_macro = size_macro
+
         self.null_bytes = null_bytes
         self.max_macro = max_macro
         self.max_names = max_names
