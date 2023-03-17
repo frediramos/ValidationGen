@@ -53,7 +53,7 @@ class ArrayTypeGen(ArrayGen):
         code.append(for_ast_code)
 
         #Terminate string with null byte ('\0')
-        if self.vartype == 'char' and self.dimension == 1:
+        if (self.vartype == 'char' and self.dimension == 1) or self.null:
             if not self.null:
                 size = BinaryOp('-', self._size(self.sizes[-1]) , Constant('int', str(1)))
             else:
