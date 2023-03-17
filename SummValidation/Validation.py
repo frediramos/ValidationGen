@@ -186,16 +186,22 @@ class ValidationGenerator(CGenerator):
 		try:
 			try:
 				fparser = FunctionParser(self.tmp_concrete, self.tmp_summary)
-				cname, sname,	\
-				function_defs, args,	\
+				
+				cname, sname,\
+				function_defs, args,\
 				ret_type = fparser.parse(self.cncrt_name, self.summ_name)
 				
 				self.cncrt_name = cname
 				self.summ_name = sname
-				header = self.gen_headers(function_defs)	
 						
 			except FunctionException as e:
 				self.exit(str(e))
+			
+			header = self.gen_headers(function_defs)	
+
+			#If one the functions is not provided
+			if None in function_defs:
+				function_defs.remove(None)
 
 			#Main function to run the tests	
 			main = createFunction(name='main',args=None, returnType='int')
