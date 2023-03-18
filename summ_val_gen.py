@@ -88,7 +88,7 @@ def parse_config(conf) -> dict:
 	for l in lines:
 		l = l.strip()
 
-		if l.startswith('\\\\'):
+		if l.startswith('//'):
 			continue
 
 		split = l.split(' ')

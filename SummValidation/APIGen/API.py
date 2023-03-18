@@ -63,7 +63,7 @@ constraints_api = {
     '_solver_SLT':      'cnstr_t _solver_SLT(symbolic sym_var, symbolic sym_var2, size_t length) {return 0;} \n',
     '_solver_SLE':      'cnstr_t _solver_SLE(symbolic sym_var, symbolic sym_var2, size_t length) {return 0;} \n',
     '_solver_ITE':      'cnstr_t _solver_ITE(cnstr_t cond, cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n',
-    '_solver_ITE_VAR':  'cnstr_t _solver_ITE(cnstr_t cond, symbolic var1, symbolic var2, size_t len1, size_t len2) {return 0;}\n'
+    '_solver_ITE_VAR':  'cnstr_t _solver_ITE_VAR(cnstr_t cond, symbolic var1, symbolic var2, size_t len1, size_t len2) {return 0;}\n'
 }
 
 #Merge all 
@@ -100,7 +100,8 @@ all_api = {
     '_solver_LE':               'cnstr_t _solver_LE(symbolic sym_var, symbolic sym_var2, size_t length) {return 0;} \n',
     '_solver_SLT':              'cnstr_t _solver_SLT(symbolic sym_var, symbolic sym_var2, size_t length) {return 0;} \n',
     '_solver_SLE':              'cnstr_t _solver_SLE(symbolic sym_var, symbolic sym_var2, size_t length) {return 0;} \n',
-    '_solver_ITE':               'cnstr_t _solver_ITE(cnstr_t cond, cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n'
+    '_solver_ITE':              'cnstr_t _solver_ITE(cnstr_t cond, cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n',
+    '_solver_ITE_VAR':          'cnstr_t _solver_ITE_VAR(cnstr_t cond, symbolic var1, symbolic var2, size_t len1, size_t len2) {return 0;}\n'
 }
 
 

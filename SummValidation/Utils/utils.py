@@ -134,6 +134,7 @@ class FCallsVisitor(NodeVisitor):
 		return node
 
 	def visit_While(self, node):
+		self.visit(node.cond)
 		self.visit(node.stmt)
 		return node
 
