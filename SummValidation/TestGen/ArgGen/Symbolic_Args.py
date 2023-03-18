@@ -67,7 +67,10 @@ class Symbolic_Args():
 
         return self.block
 
-    def get_types(self):  
+    def get_types(self):
+        if not self.types_list:
+            self.create_symbolic_args()
+
         return self.types_list
 
     def get_all_args(self):

@@ -19,15 +19,20 @@ class FunctionParser():
 
 		self.concrete = concrete
 		self.summary = summary
+		self.concrete_debug = None
+		self.summary_debug = None
+		self.tmp = 'tmp_'
 
 		self.cnctr_functions = None
 		self.summ_functions = None
 
 		if self.concrete:	
 			self.cnctr_functions = self.getFunctions(self.concrete)
+			self.concrete_debug = self.concrete.replace(self.tmp,'')
 
 		if self.summary:	
 			self.summ_functions = self.getFunctions(self.summary)
+			self.summary_debug = self.summary.replace(self.tmp,'')
 
 
 	#Parse target functions from the given files
@@ -65,13 +70,13 @@ class FunctionParser():
 
 		if summ_def:
 			summ_args, _ = self.get_args(summ_def)
-		
-		if not self.summary and not self.concrete\
+
+		if self.summary and self.concrete\
 			and cncrt_args != summ_args:
 			message = (
 				"Arguments do not match!\n"
-				f"Summary path: \'{self.summary}\'\n"
-				f"Concrete Function: \'{self.concrete}\'")
+				f"Summary path: \'{self.summary_debug}\'\n"
+				f"Concrete Function: \'{self.concrete_debug}\'")
 			raise FunctionException(message)
 
 		return cncrt_args_def
@@ -96,8 +101,8 @@ class FunctionParser():
 		elif ret1 != ret2:
 			message = (
 				"Return values do not match!\n"
-				f"Summary path: \'{self.summary}\'\n"
-				f"Concrete Function: \'{self.concrete}\'")
+				f"Summary path: \'{self.summary_debug}\'\n"
+				f"Concrete Function: \'{self.concrete_debug}\'")
 			raise FunctionException(message)
 
 		return ret1
@@ -123,7 +128,7 @@ class FunctionParser():
 		definition = None
 		message = None
 
-		if file.startswith('tmp_'):
+		if file.startswith(self.tmp):
 			file = file[4:]
 
 		if len(names) == 0:
