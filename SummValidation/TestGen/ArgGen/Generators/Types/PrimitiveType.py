@@ -32,7 +32,7 @@ class PrimitiveTypeGen(DefaultGen):
 
 
     # e.g, int a = summ_new_sym_var(sizeof(int))   
-    def gen(self):
+    def gen(self, const=None):
 
         code = []
         name = self.argname.name
@@ -41,7 +41,10 @@ class PrimitiveTypeGen(DefaultGen):
         lvalue = TypeDecl(name, [], IdentifierType(names=[self.vartype]))
 
         #Make symbolic type
-        rvalue = self.symbolic_rvalue(Constant('string', f'\"{name}\"'))
+        if const:
+            rvalue = self.const_rvalue(const) 
+        else:
+            rvalue = self.symbolic_rvalue(Constant('string', f'\"{name}\"'))
 
         #Assemble declaration
         decl = Decl(name, [], [], [], lvalue, rvalue, None)

@@ -7,7 +7,7 @@ from ..Generators.Types.StructType import StructTypeGen
 
 class ArgVisitor(NodeVisitor):
 
-    def __init__ (self, sizeMacro = None, null = None, max_macro = None, max_names = []):
+    def __init__ (self, sizeMacro = None, null = None, max_macro = None, max_names = [], default=None):
 
         #Store argument node (Decl)
         self.node = None
@@ -20,6 +20,7 @@ class ArgVisitor(NodeVisitor):
         self.null = null
         self.max_macro = max_macro
         self.max_names = max_names
+        self.default = default
 
         #ID object
         self.argname = None 
@@ -47,7 +48,7 @@ class ArgVisitor(NodeVisitor):
 
     #Visitors
     def visit(self, node):
-        
+         
         #Store top 'Decl' node
         if isinstance(node,Decl):
             self.node = node
@@ -77,7 +78,7 @@ class ArgVisitor(NodeVisitor):
             #Primitive Type
             else:
                 generator = PrimitiveTypeGen(argname, self.argtype, self.max_macro, self.max_names)
-                self.code = generator.gen()
+                self.code = generator.gen(self.default)
                 return
         
         #Array or pointer
@@ -85,7 +86,7 @@ class ArgVisitor(NodeVisitor):
             if self.argtype == 'void':
                 self.argtype = 'char'
             generator = ArrayTypeGen(argname, self.argtype, self.arrayDim, self.struct, self.null)
-            self.code = generator.gen()
+            self.code = generator.gen(self.default)
             return  
     
 

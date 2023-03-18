@@ -26,11 +26,14 @@ def get_cmd_args():
 	parser.add_argument('--func_name', metavar='name', type=str,
 						help='Name of the concrete function in the given path')
 
-	parser.add_argument('--arraysize', metavar='value', nargs='+', type=int, required=False, default=[5],
+	parser.add_argument('--arraysize', metavar='value | [val1,val2]', nargs='+', type=int, required=False, default=[5],
 						help='Maximum array size of each test (default:5)')
 
-	parser.add_argument('--nullbytes', metavar='index', nargs='+', type=int, required=False, default=[],
+	parser.add_argument('--nullbytes', metavar='index | [idx1,idx2]', nargs='+', type=int, required=False, default=[],
 						help='Specify array indexes to place null bytes')
+
+	parser.add_argument('--defaultvalues', metavar='{var:value}', nargs='+', type=int, required=False, default={},
+						help='Specify default const values for input variables')
 
 	parser.add_argument('--maxvalue', metavar='value', nargs='+', type=int, required=False, default=[],
 						help='Provide an upper bound for numeric values')
@@ -57,7 +60,13 @@ def get_cmd_args():
 	return parser.parse_args()
 
 
-def parse_specific_config(line):
+def parse_config_dict(line):
+	
+	if '{' in line:
+		value_sets  = re.findall(r'(\{([0-9]+\:\'{0,1}\w+\'{0,1}\,{0,1} *)+\})+', line)
+		return [s for s in map(lambda x: ast.literal_eval(x[0]), value_sets)]
+
+def parse_config_list(line):
 	
 	if '[' in line:
 		size_sets  = re.findall(r'(\[([0-9]+\,{0,1})+\])+', line)
@@ -84,10 +93,10 @@ def parse_config(conf) -> dict:
 
 		split = l.split(' ')
 		if 'array_size' in split[0]:
-			config['array_size'] = parse_specific_config(l)
+			config['array_size'] = parse_config_list(l)
 
 		if 'null_bytes' in split[0]:
-			config['null_bytes'] = parse_specific_config(l)
+			config['null_bytes'] = parse_config_list(l)
 
 		if 'max_num' in split[0]:
 			config['max_num'] = [size for size in map(lambda x: int(x), split[1:])]
@@ -119,6 +128,9 @@ def parse_config(conf) -> dict:
 		if 'max_names' in split[0]:
 			config['max_names'] = [n for n in split[1:]]
 
+		if 'default_values' in split[0]:
+			config['default_values'] = parse_config_dict(l)
+
 	return config
 
 
@@ -137,11 +149,22 @@ if __name__ == "__main__":
 	max_names = args.maxnames
 	summ_name = args.summ_name
 	func_name = args.func_name
+	default_values = args.defaultvalues
 	compile_arch = args.compile
 	lib_paths = args.lib
 	memory = args.memory
 	config_file = args.config
 	noapi = args.noAPI
+	
+	if '[' in arraysize:
+		arraysize = [s for s in map(lambda x: ast.literal_eval(x), arraysize)]
+
+	if '[' in nullbytes:
+		nullbytes = [s for s in map(lambda x: ast.literal_eval(x), nullbytes)]
+
+	if '[' in default_values:
+		default_values = [s for s in map(lambda x: ast.literal_eval(x), default_values)]
+
 	
 	if config_file:
 		
@@ -178,6 +201,9 @@ if __name__ == "__main__":
 		if 'max_names' in keys:
 			max_names = config['max_names']
 
+		if 'default_values' in keys:
+			default_values = config['default_values']
+		
 
 	if not concrete_function and not target_summary:
 		sys.exit('ERROR: At least the code for a concrete function or summary MUST be provided')
@@ -196,6 +222,7 @@ if __name__ == "__main__":
 	valgenerator = ValidationGenerator(concrete_function, target_summary, outputfile,
 				    					arraysize=arraysize, nullbytes=nullbytes,
 										maxnum=maxvalue, maxnames=max_names,
+										default=default_values,
 									    memory=memory,
 										cncrt_name=func_name, summ_name=summ_name,
 										no_api=noapi)

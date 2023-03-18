@@ -27,23 +27,6 @@ class Symbolic_Args():
 
         self.args_dict = {}
 
-        #Visit arguments 
-        for arg in self.args:
-            
-            size = self._get_val(self.size_macro)
-            null = self._get_val(self.null_bytes)
-
-            vis = ArgVisitor(size, null, self.max_macro, self.max_names)   
-            vis.visit(arg)
-            code = vis.gen_code()
-            typ = vis.get_type()
-            
-            self.call_args.append(vis.argname)
-            self.block += code
-            self.types_list += typ
-            
-            self.args_dict[vis.argname] = typ
-
     def _get_val(self, arr):
         if isinstance(arr, list):
             if len(arr) > 1:
@@ -55,7 +38,33 @@ class Symbolic_Args():
         else:
             return arr
 
-    def create_symbolic_args(self):
+
+    def create_symbolic_args(self, default={}):
+        #Visit arguments 
+        for i, arg in enumerate(self.args, start=1):
+            
+            size = self._get_val(self.size_macro)
+            null = self._get_val(self.null_bytes)
+
+            if i in default.keys():
+                default_val = default[i]
+            else:
+                default_val = None
+
+            vis = ArgVisitor(size, null,
+                              self.max_macro, self.max_names,
+                                default_val)   
+            vis.visit(arg)
+            typ = vis.get_type()
+           
+
+            code = vis.gen_code()
+            
+            self.call_args.append(vis.argname)
+            self.block += code
+            self.types_list += typ
+            self.args_dict[vis.argname] = typ
+
         return self.block
 
     def get_types(self):  

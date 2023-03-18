@@ -33,14 +33,14 @@ class TestGen:
                 code.append(gen.mem_addr(ptr, size_macro))
         return code
 
-    def createTest(self, name, size_macro, null_bytes, max_macro, id):
+    def createTest(self, name, size_macro, null_bytes, max_macro, default, id):
         
         #Helper objects
         sym_args_gen = Symbolic_Args(self.args, size_macro, null_bytes, max_macro, self.max_names)
         api_gen = API_Gen()
 
         #Create symbolic args
-        args_code = sym_args_gen.create_symbolic_args()
+        args_code = sym_args_gen.create_symbolic_args(default)
         
         #Get ordered arg names
         args_names = sym_args_gen.get_all_args()

@@ -23,7 +23,7 @@ class ArrayGen(DefaultGen):
 
     #Declare N-dimension array in the stack
     #e.g array[10][5];
-    def declare_stack_array(self):
+    def declare_stack_array(self, const=None):
         code = []
         name = self.argname.name
         
@@ -35,7 +35,7 @@ class ArrayGen(DefaultGen):
         for i in range(self.dimension-2, -1, -1):
             array = ArrayDecl(array,  self._size(self.sizes[i]), [])
 
-        code.append(Decl(name, [], [], [], array, None, None))
+        code.append(Decl(name, [], [], [], array, const, None))
         return code  
 
 
@@ -110,7 +110,20 @@ class ArrayGen(DefaultGen):
 
 
 
-    def gen_array_decl(self):
+    def gen_array_decl(self, const=None):
+
+        if const:
+            name = self.argname.name
+            typedecl = TypeDecl(name, [], IdentifierType(names=[self.vartype]))
+            ptr = PtrDecl([], typedecl)
+            for _ in range(1, self.dimension):
+                ptr = PtrDecl([], ptr)
+
+            rvalue = self.const_rvalue(const);
+            decl = Decl(name, [], [], [], ptr, rvalue, None)
+            return [decl]
+
+
         return self.declare_stack_array()
 
 

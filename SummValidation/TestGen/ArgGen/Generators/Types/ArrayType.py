@@ -34,7 +34,11 @@ class ArrayTypeGen(ArrayGen):
 
 
     #Declare array and fill
-    def gen(self):     
+    def gen(self, const=None):
+
+        if const:
+            return self.gen_array_decl(const)
+  
         code = []
         name = self.argname.name
         
