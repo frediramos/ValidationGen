@@ -63,14 +63,14 @@ def get_cmd_args():
 def parse_config_dict(line):
 	
 	if '{' in line:
-		value_sets  = re.findall(r'(\{([0-9]+\:\'{0,1}\w+\'{0,1}\,{0,1} *)+\})+', line)
-		return [s for s in map(lambda x: ast.literal_eval(x[0]), value_sets)]
+		value_sets  = re.findall(r'(\{[^\}]*\})+', line)
+		return [s for s in map(lambda x: ast.literal_eval(x), value_sets)]
 
 def parse_config_list(line):
 	
 	if '[' in line:
-		size_sets  = re.findall(r'(\[([0-9]+\,{0,1})+\])+', line)
-		return [s for s in map(lambda x: ast.literal_eval(x[0]), size_sets)]
+		size_sets  = re.findall(r'(\[[^\]]*\])+', line)
+		return [s for s in map(lambda x: ast.literal_eval(x), size_sets)]
 
 	else:
 		split = line.split(' ')
@@ -125,8 +125,8 @@ def parse_config(conf) -> dict:
 			if len(split) == 2:
 				config['lib'] = split[1]
 
-		if 'max_args' in split[0]:
-			config['max_args'] = [n for n in split[1:]]
+		if 'max_names' in split[0]:
+			config['max_names'] = [n for n in split[1:]]
 
 		if 'default_values' in split[0]:
 			config['default_values'] = parse_config_dict(l)
@@ -146,7 +146,7 @@ if __name__ == "__main__":
 	arraysize = args.arraysize
 	nullbytes = args.nullbytes
 	maxvalue = args.maxvalue
-	max_args = args.maxnames
+	max_names = args.maxnames
 	summ_name = args.summ_name
 	func_name = args.func_name
 	default_values = args.defaultvalues
@@ -198,8 +198,8 @@ if __name__ == "__main__":
 		if 'lib' in keys:
 			lib_paths = config['lib']	
 
-		if 'max_args' in keys:
-			max_args = config['max_args']
+		if 'max_names' in keys:
+			max_names = config['max_names']
 
 		if 'default_values' in keys:
 			default_values = config['default_values']
@@ -221,7 +221,7 @@ if __name__ == "__main__":
 
 	valgenerator = ValidationGenerator(concrete_function, target_summary, outputfile,
 				    					arraysize=arraysize, nullbytes=nullbytes,
-										maxnum=maxvalue, maxnames=max_args,
+										maxnum=maxvalue, maxnames=max_names,
 										default=default_values,
 									    memory=memory,
 										cncrt_name=func_name, summ_name=summ_name,
