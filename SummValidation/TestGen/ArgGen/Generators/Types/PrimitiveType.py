@@ -5,11 +5,11 @@ from ..DefaultGen import DefaultGen
 # Create a primitive symbolic var
 
 class PrimitiveTypeGen(DefaultGen):
-    def __init__ (self, name, vartype, max_macro = None, max_names = []):
+    def __init__ (self, name, vartype, max_macro = None, max_args = []):
         super().__init__(name, vartype)
 
         self.max_macro = max_macro
-        self.max_names = max_names
+        self.max_args = max_args
 
 
     #size_t max = MAX_NUM_1;
@@ -50,6 +50,6 @@ class PrimitiveTypeGen(DefaultGen):
         decl = Decl(name, [], [], [], lvalue, rvalue, None)
         code.append(decl)
 
-        if self.max_macro and not self.max_names or name in self.max_names:
+        if self.max_macro and not self.max_args or name in self.max_args:
             code += self._limit_max(name)
         return code

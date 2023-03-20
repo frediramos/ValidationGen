@@ -4,7 +4,7 @@ from . Visitors.FunctionArgs import ArgVisitor
 
 class Symbolic_Args():
     def __init__(self, args, size_macro = None, null_bytes = [],
-                  max_macro = None, max_names = []):
+                  max_macro = None, max_args = []):
        
         self.args = args
 
@@ -15,7 +15,7 @@ class Symbolic_Args():
 
         self.null_bytes = null_bytes
         self.max_macro = max_macro
-        self.max_names = max_names
+        self.max_args = max_args
         
         if self.args == None:
             self.args = []
@@ -52,7 +52,7 @@ class Symbolic_Args():
                 default_val = None
 
             vis = ArgVisitor(size, null,
-                              self.max_macro, self.max_names,
+                              self.max_macro, self.max_args,
                                 default_val)   
             vis.visit(arg)
             typ = vis.get_type()

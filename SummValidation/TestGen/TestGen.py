@@ -6,13 +6,13 @@ from SummValidation.Utils.utils import returnValue
 from . ArgGen import Symbolic_Args
 
 class TestGen:
-    def __init__(self, args, ret, cncrt_name, summ_name, memory, max_names):   
+    def __init__(self, args, ret, cncrt_name, summ_name, memory, max_args):   
         self.args = args
         self.ret = ret
         self.memory = memory
         self.cncrt_name = cncrt_name
         self.summ_name = summ_name
-        self.max_names = max_names
+        self.max_args = max_args
 
 
     def call_function(self, fname, call_args, ret_name, ret_type):
@@ -36,7 +36,7 @@ class TestGen:
     def createTest(self, name, size_macro, null_bytes, max_macro, default, id):
         
         #Helper objects
-        sym_args_gen = Symbolic_Args(self.args, size_macro, null_bytes, max_macro, self.max_names)
+        sym_args_gen = Symbolic_Args(self.args, size_macro, null_bytes, max_macro, self.max_args)
         api_gen = API_Gen()
 
         #Create symbolic args
