@@ -53,6 +53,7 @@ class PrimitiveTypeGen(DefaultGen):
         decl = Decl(name, [], [], [], lvalue, rvalue, None)
         code.append(decl)
 
-        if self.max_macro and (name in self.max_args or not self.max_args):
+        if (self.max_macro and const is None)\
+             and (name in self.max_args or not self.max_args):
             code += self._limit_max(name)
         return code
