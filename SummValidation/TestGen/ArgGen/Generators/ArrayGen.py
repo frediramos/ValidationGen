@@ -112,7 +112,7 @@ class ArrayGen(DefaultGen):
 
     def gen_array_decl(self, const=None):
 
-        if const:
+        if const is not None:
             name = self.argname.name
             typedecl = TypeDecl(name, [], IdentifierType(names=[self.vartype]))
             ptr = PtrDecl([], typedecl)

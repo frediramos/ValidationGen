@@ -41,7 +41,7 @@ class PrimitiveTypeGen(DefaultGen):
         lvalue = TypeDecl(name, [], IdentifierType(names=[self.vartype]))
 
         #Make symbolic type
-        if const:
+        if const is not None:
             rvalue = self.const_rvalue(const) 
         else:
             rvalue = self.symbolic_rvalue(Constant('string', f'\"{name}\"'))
