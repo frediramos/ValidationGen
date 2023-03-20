@@ -1,9 +1,9 @@
 from pycparser.c_ast import *
 from ..DefaultGen import DefaultGen
 
+MAX_ID = 0
 
 # Create a primitive symbolic var
-
 class PrimitiveTypeGen(DefaultGen):
     def __init__ (self, name, vartype, max_macro = None, max_args = []):
         super().__init__(name, vartype)
@@ -16,12 +16,15 @@ class PrimitiveTypeGen(DefaultGen):
     #assume(_solver_LE(&n, &max, sizeof(size_t) * 8));
     
     def _limit_max(self, name):
+        global MAX_ID
+        MAX_ID += 1
 
-        lvalue = TypeDecl('max', [], IdentifierType(names=[self.vartype]))
+        max_name = f'max_{MAX_ID}'
+        lvalue = TypeDecl(max_name, [], IdentifierType(names=[self.vartype]))
         rvalue = ID(self.max_macro)
-        decl = Decl('max', [], [], [], lvalue, rvalue, None)
+        decl = Decl(max_name, [], [], [], lvalue, rvalue, None)
 
-        max = UnaryOp('&', ID('max'))
+        max = UnaryOp('&', ID(max_name))
         value = UnaryOp('&', ID(name))
         size = self.type_size(self.vartype)
 
@@ -50,6 +53,6 @@ class PrimitiveTypeGen(DefaultGen):
         decl = Decl(name, [], [], [], lvalue, rvalue, None)
         code.append(decl)
 
-        if self.max_macro and not self.max_args or name in self.max_args:
+        if self.max_macro and (name in self.max_args or not self.max_args):
             code += self._limit_max(name)
         return code
