@@ -58,8 +58,8 @@ class Symbolic_Args():
             default_val = self._get_dict_val(i, default)
             concrete_val = self._get_dict_val(i, concrete)
 
-            vis = ArgVisitor(size, null,
-                              self.max_macro, self.max_args,
+            vis = ArgVisitor(size, self.max_macro,
+                              null, self.max_args,
                                 default_val, concrete_val)   
             vis.visit(arg)
             typ = vis.get_type()
