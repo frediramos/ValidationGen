@@ -34,7 +34,7 @@ class ArrayTypeGen(ArrayGen):
 
 
     #Declare array and fill
-    def gen(self, const=None):
+    def gen(self, const=None, concrete=[]):
 
         if const:
             return self.gen_array_decl(const)
@@ -64,4 +64,10 @@ class ArrayTypeGen(ArrayGen):
                 size = Constant('int', str(self.null))
             code.append(utils.terminate_string(self.argname, size))
 
+            if concrete:
+                code += self.fill_concrete(self.argname, concrete, size)
+
         return code
+
+
+

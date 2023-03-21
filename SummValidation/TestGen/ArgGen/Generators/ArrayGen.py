@@ -1,4 +1,8 @@
+import random
+
 from pycparser.c_ast import *
+
+import SummValidation.Utils.utils as utils
 from .DefaultGen import DefaultGen
 
 
@@ -155,3 +159,23 @@ class ArrayGen(DefaultGen):
         rvalue = FuncCall(ID('new_sym_var_array'), sizeof)
 
         return rvalue
+    
+
+    def fill_concrete(self, lvalue, const:list, size):
+        char = Constant('char', '\'A\'')
+
+        if isinstance(const, str):
+            code = []
+            n = int(const[0])
+            for _ in range(n):
+                index = random.randint(10,20)
+                index = BinaryOp('%', Constant('int', str(index)), size)
+                code.append(utils.fill_array(lvalue, char, index))
+            
+            return code   
+
+        elif isinstance(const, list):
+            return [utils.fill_array(lvalue, char, Constant('int', str(index))) for index in const]
+
+        else:
+            return []

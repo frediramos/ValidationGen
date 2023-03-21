@@ -40,6 +40,9 @@ def get_cmd_args():
 
 	parser.add_argument('--maxnames', metavar='name', nargs='+', type=int, required=False, default=[],
 						help='Numeric value names to be constrained')
+	
+	parser.add_argument('--concretearray', metavar='{var:[indexes]}', nargs='+', type=int, required=False, default={},
+						help='Place concrete values in selected array indexes')
 
 	parser.add_argument('--lib', metavar='path', nargs='+', type=str, required=False,
 						help='Path to external files needed to compile the test binary')
@@ -131,6 +134,9 @@ def parse_config(conf) -> dict:
 		if 'default_values' in split[0]:
 			config['default_values'] = parse_config_dict(l)
 
+		if 'concrete_array' in split[0]:
+			config['concrete_array'] = parse_config_dict(l)
+
 	return config
 
 
@@ -145,6 +151,7 @@ if __name__ == "__main__":
 	outputfile = args.o
 	arraysize = args.arraysize
 	nullbytes = args.nullbytes
+	concrete_array = args.concretearray
 	maxvalue = args.maxvalue
 	max_names = args.maxnames
 	summ_name = args.summ_name
@@ -165,7 +172,9 @@ if __name__ == "__main__":
 	if '[' in default_values:
 		default_values = [s for s in map(lambda x: ast.literal_eval(x), default_values)]
 
-	
+	if '[' in concrete_array:
+		concrete_array = [s for s in map(lambda x: ast.literal_eval(x), concrete_array)]
+
 	if config_file:
 		
 		config = parse_config(config_file)
@@ -204,6 +213,9 @@ if __name__ == "__main__":
 		if 'default_values' in keys:
 			default_values = config['default_values']
 		
+		if 'concrete_array' in keys:
+			concrete_array = config['concrete_array']
+
 
 	if not concrete_function and not target_summary:
 		sys.exit('ERROR: At least the code for a concrete function or summary MUST be provided')
@@ -222,7 +234,7 @@ if __name__ == "__main__":
 	valgenerator = ValidationGenerator(concrete_function, target_summary, outputfile,
 				    					arraysize=arraysize, nullbytes=nullbytes,
 										maxnum=maxvalue, maxnames=max_names,
-										default=default_values,
+										default=default_values, concrete_arrays=concrete_array,
 									    memory=memory,
 										cncrt_name=func_name, summ_name=summ_name,
 										no_api=noapi)

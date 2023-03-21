@@ -18,7 +18,7 @@ class ValidationGenerator(CGenerator):
 				 outputfile,
 				 arraysize = [5], nullbytes = [],
 				 maxnum = [], maxnames = [],
-				 default = {},
+				 default = {}, concrete_arrays = {},
 				 pointersize=5, fuel = 5,
 				 memory = False,
 				 cncrt_name = None, summ_name=None, no_api=False,
@@ -31,6 +31,7 @@ class ValidationGenerator(CGenerator):
 		self.maxnum = maxnum
 		self.maxnames = maxnames
 		self.default = default
+		self.concrete_arrays = concrete_arrays
 		self.pointersize = pointersize
 		self.fuel = fuel
 
@@ -166,21 +167,22 @@ class ValidationGenerator(CGenerator):
 			return self.nullbytes
 
 
-	def get_default_values(self, id):
-		if self.default:
-			if id <= len(self.default):
-				return self.default[id-1]	
+	def get_dict_value(self, id, dict):
+		if dict:
+			if id <= len(dict):
+				return dict[id-1]	
 			else:
-				return self.default[-1]
+				return dict[-1]
 		else:
-			return self.default
+			return dict
 
 
 	def genTest(self, testname, args, ret_type, id):
 
 		array_size = self.get_array_size(id)
 		null_bytes = self.get_null_byte(id)
-		default = self.get_default_values(id)
+		default = self.get_dict_value(id, self.default)
+		concrete = self.get_dict_value(id, self.concrete_arrays)
 
 		#Select Macro id for Max value
 		max_value = f'{MAX_MACRO}_{id}' if id <= len(self.maxnum) else None
@@ -192,7 +194,7 @@ class ValidationGenerator(CGenerator):
 
 		return gen.createTest(testname,
 				array_size, null_bytes,
-				max_value, default, id)
+				max_value, default, concrete, id)
 			
 
 

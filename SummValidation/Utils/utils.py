@@ -46,11 +46,13 @@ def mainFunction(calls):
 	block = Compound(calls_ast)
 	return block
 
-
-def terminate_string(lvalue, size):
-	arr_lvalue = ArrayRef(lvalue, subscript=size)
-	assign = Assignment(op='=', lvalue=arr_lvalue, rvalue=Constant('char', '\'\\0\''))
+def fill_array(lvalue, rvalue, index):
+	arr_lvalue = ArrayRef(lvalue, subscript=index)
+	assign = Assignment(op='=', lvalue=arr_lvalue, rvalue=rvalue)
 	return assign   
+
+def terminate_string(lvalue, index):
+	return fill_array(lvalue, Constant('char', '\'\\0\''), index)
 
 
 class FCallsVisitor(NodeVisitor):
