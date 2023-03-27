@@ -115,15 +115,24 @@ class ArrayGen(DefaultGen):
 
 
     def gen_array_decl(self, const=None):
+        ampersand = '&'
 
         if const is not None:
+            
+            if const == ampersand:
+                self.dimension -= 1
+
             name = self.argname.name
             typedecl = TypeDecl(name, [], IdentifierType(names=[self.vartype]))
             ptr = PtrDecl([], typedecl)
             for _ in range(1, self.dimension):
                 ptr = PtrDecl([], ptr)
-
-            rvalue = self.const_rvalue(const);
+            
+            if const == ampersand:
+                rvalue = None
+            else:
+                rvalue = self.const_rvalue(const);
+            
             decl = Decl(name, [], [], [], ptr, rvalue, None)
             return [decl]
 

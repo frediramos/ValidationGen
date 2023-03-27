@@ -62,12 +62,15 @@ class Symbolic_Args():
                               null, self.max_args,
                                 default_val, concrete_val)   
             vis.visit(arg)
-            typ = vis.get_type()
            
-
+            typ = vis.get_type()
             code = vis.gen_code()
+            argname = vis.argname
+
+            if default_val == '&':
+                argname = f'&{argname}'
             
-            self.call_args.append(vis.argname)
+            self.call_args.append(argname)
             self.block += code
             self.types_list += typ
             self.args_dict[vis.argname] = typ
