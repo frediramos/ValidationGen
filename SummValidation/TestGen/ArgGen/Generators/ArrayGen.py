@@ -171,7 +171,7 @@ class ArrayGen(DefaultGen):
     
 
     def fill_concrete(self, lvalue, const:list, size):
-        char = Constant('char', '\'A\'')
+        char = Constant('char', '\'1\'')
 
         if isinstance(const, str):
             code = []
