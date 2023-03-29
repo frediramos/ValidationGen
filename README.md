@@ -13,10 +13,14 @@ $ ./install.sh -u
 ```
 
 # Usage
+To obtain a full description of our test generatiom tool one can use the flag `-h`
+```
+$ summvalgen -h
+```
 
 ## Generate a simple test for ``strlen`` 
 
-Given a concrete function for ``strlen`` and a corresponding summary (files ``summ_strlen.c`` and ``concrete_strlen.c``) one can generate a simple validation using:
+Given a concrete function for ``strlen`` and a corresponding summary (files ``summ_strlen.c`` and ``concrete_strlen.c``) one can generate a simple validation test using:
 
 ```sh
 $ summvalgen -summ summ_strlen.c -func concrete_strlen.c
@@ -40,4 +44,13 @@ This automatically compiles the generated test to an *x86* binary. Alternatively
 $ summvalgen -summ summ_strlen.c -func concrete_strlen.c -compile=x64
 ```
 compiles the test to *x84_64* architecture.
+
+
+## Generate multiple tests
+
+To generate a single test file containing multiple executions for  different arrays sizes one can pass an array of values to the `--arraysize` flag:
+
+```sh
+$ summvalgen -summ summ_strlen.c -func concrete_strlen.c --arraysize= 3 5 7 -compile
+```
 
