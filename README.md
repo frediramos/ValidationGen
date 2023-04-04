@@ -109,7 +109,7 @@ $ summvalgen -summ summ_strlen.c -func concrete_strlen.c --arraysize 3 5 7 -comp
 
 ## All Config file options
 
-The options allowed in the configuration file mirror the flags offered in the command line interface:
+The options allowed in the configuration file mirror some of the flags offered in the command line interface:
 
 ```
 func_file  concrete.c       // -func
