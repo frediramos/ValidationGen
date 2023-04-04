@@ -54,6 +54,20 @@ $ summvalgen -summ summ_strlen.c -func concrete_strlen.c -compile=x64
 ```
 compiles the test to *x84_64* architecture.
 
+## Function names and Libraries
+
+To evaluate a tool summary (not implemented in a separate file) one can simply specify its name using the ``--summ_name`` flag: 
+
+```sh
+$ summvalgen -summ_name strlen -func concrete_strlen.c -compile=x64
+```
+
+Additionally, it is often the case that a summary or concrete function may not be self contained in a single C file. To this end, when compiling a test using the `--compile` flag one can also pass additional files with the ``--lib`` flag:
+
+```sh
+$ summvalgen -summ summ_strlen.c -func concrete_strlen.c -compile --lib lib1.c lib2.c 
+```
+
 
 ## Constrain numeric values
 
@@ -66,9 +80,11 @@ $ summvalgen -summ summ_memcpy.c -func concrete_memcpy.c -maxvalue=5
 will generate a test where the ``len`` argument is constrained to be lower or equal than ``5``.
 
 ## Evaluate memory functions
-By default the summary validation tool only takes into account the generated paths and corresponding return valuel. Hence, in order to evaluate a summary for a function with memory side-effects such ``memcpy``, one can use the ``-memory`` flag:
+By default the summary validation tool only takes into account the generated paths and corresponding return values. Hence, in order to evaluate a summary for a function with memory side-effects such ``memcpy``, one can use the ``-memory`` flag:
 
 ```sh
 $ summvalgen -summ summ_memcpy.c -func concrete_memcpy.c -maxvalue=5 -memory
 ```
-This flag marks the relevant memory addresses in the summary's execution to be evaluated.
+This flag marks the relevant memory addresses in the summary's execution so that they are also be evaluated.
+
+
