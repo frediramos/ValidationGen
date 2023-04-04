@@ -33,7 +33,7 @@ $ summvalgen -summ summ_strlen.c -func concrete_strlen.c --arraysize=3
 ```
 
 ## Generate multiple tests
-To generate a single test file containing multiple executions for  different arrays sizes one can pass an array of values to the `--arraysize` flag:
+To generate a single test file containing multiple executions for  different arrays sizes one can also pass an array of values to the `--arraysize` flag:
 
 ```sh
 $ summvalgen -summ summ_strlen.c -func concrete_strlen.c --arraysize 3 5 7 -compile
@@ -86,5 +86,25 @@ By default the summary validation tool only takes into account the generated pat
 $ summvalgen -summ summ_memcpy.c -func concrete_memcpy.c -maxvalue=5 -memory
 ```
 This flag marks the relevant memory addresses in the summary's execution so that they are also be evaluated.
+
+# Config Files
+
+In alternative to the command line interface, one can also pass a configuration file using the ``-config`` flag. For instance, considering the configuration file (``config.txt``): 
+
+```
+array_size 3 5 7
+func_file concrete_strlen.c
+summ_file summ_strlen.c
+compile_arch x86
+```
+
+The command:
+```sh
+$ summvalgen -config config.txt
+```
+is equivalent to:
+```sh
+$ summvalgen -summ summ_strlen.c -func concrete_strlen.c --arraysize 3 5 7 -compile
+```
 
 
