@@ -125,8 +125,7 @@ def parse_config(conf) -> dict:
 				config['func_file'] = split[1]				
 
 		if 'lib' in split[0]:
-			if len(split) == 2:
-				config['lib'] = split[1]
+			config['lib'] = parse_config_list(l)
 
 		if 'max_names' in split[0]:
 			config['max_names'] = [n for n in split[1:]]
