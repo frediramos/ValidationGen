@@ -102,7 +102,7 @@ def parse_config(conf) -> dict:
 			config['null_bytes'] = parse_config_list(l)
 
 		if 'max_num' in split[0]:
-			config['max_num'] = [size for size in map(lambda x: int(x), split[1:])]
+			config['max_num'] = parse_config_list(l)
 
 		if 'summ_name' in split[0]:
 			if len(split) == 2:
