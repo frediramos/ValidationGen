@@ -87,7 +87,7 @@ $ summvalgen -summ summ_memcpy.c -func concrete_memcpy.c -maxvalue=5 -memory
 ```
 This flag marks the relevant memory addresses in the summary's execution so that they are also be evaluated.
 
-# Config Files
+# Configuration Files
 
 In alternative to the command line interface, one can also pass a configuration file using the ``-config`` flag. For instance, considering the configuration file (``config.txt``): 
 
@@ -107,4 +107,21 @@ is equivalent to:
 $ summvalgen -summ summ_strlen.c -func concrete_strlen.c --arraysize 3 5 7 -compile
 ```
 
+## All Config file options
 
+The options allowed in the configuration file mirror the flags offered in the command line interface:
+
+```
+func_file  concrete.c       // -func
+summ_file  summ.c           // -summ
+summ_name  strlen           // --summ_name
+func_name  summ_strlen      // --func_name
+array_size 5                // --arraysize
+null_bytes 3                // --nullbytes
+default_values {1:'NULL'}   // --defaultvalues
+max_num                     // --maxvalue
+max_names len               // --maxnames
+concrete_array {1:[0]}      // --concretearray
+lib lib.c                   // --lib
+compile_arch x86            // --compile
+```
