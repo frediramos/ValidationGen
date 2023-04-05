@@ -116,10 +116,10 @@ func_file  concrete.c       // -func
 summ_file  summ.c           // -summ
 summ_name  strlen           // --summ_name
 func_name  summ_strlen      // --func_name
-array_size 5                // --arraysize
-null_bytes 3                // --nullbytes
+array_size 5 | [5,7]        // --arraysize
+null_bytes 3 | [2,3]        // --nullbytes
 default_values {1:'NULL'}   // --defaultvalues
-max_num                     // --maxvalue
+max_num 5                   // --maxvalue
 max_names len               // --maxnames
 concrete_array {1:[0]}      // --concretearray
 lib lib.c                   // --lib
