@@ -112,18 +112,18 @@ $ summvalgen -summ summ_strlen.c -func concrete_strlen.c --arraysize 3 5 7 -comp
 The options allowed in the configuration file mirror some of the flag options offered in the command line interface:
 
 ```
-func_file  concrete.c       // -func
-summ_file  summ.c           // -summ
-summ_name  strlen           // --summ_name
-func_name  summ_strlen      // --func_name
-array_size 5 | [5,7]        // --arraysize
-null_bytes 3 | [2,3]        // --nullbytes
-default_values {1:'NULL'}   // --defaultvalues
-max_num 5                   // --maxvalue
-max_names len               // --maxnames
-concrete_array {1:[0]}      // --concretearray
-lib lib.c                   // --lib
-compile_arch x86            // --compile
+func_file  concrete.c       // -func            (Path to file containing the concrete function)
+summ_file  summ.c           // -summ            (Path to file containing the target summary)
+summ_name  strlen           // --summ_name      (Name of the summary in the given path)
+func_name  summ_strlen      // --func_name      (Name of the concrete function in the given path)
+array_size 5 | [5,7]        // --arraysize      (Maximum array size of each test (default:5))
+null_bytes 3 | [2,3]        // --nullbytes      (Specify array indexes to place null bytes)
+default_values {1:'NULL'}   // --defaultvalues  (Specify default const values for input variables)
+max_num 5                   // --maxvalue       (Provide an upper bound for numeric values)
+max_names len               // --maxnames       (Numeric value names to be constrained)
+concrete_array {1:[0]}      // --concretearray  (Place concrete values in selected array indexes)
+lib lib.c                   // --lib            (Path to external files required for compilation)
+compile_arch x86            // --compile        (Compile the generated test)
 ```
 
 # Special Configurations
@@ -134,4 +134,4 @@ By passing an array of type ``[<val>,<val2>,...]`` instead of a single value, on
 ```
 array_size [5,7]  // --arraysize [5,7] 
 ```
-states that the **first** argument in the function must have ``size = 5`` while the **second** must have ``size = 7``.
+specifies that the **first** argument in the function must have ``size = 5`` and the **second** must have ``size = 7``.
