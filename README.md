@@ -109,7 +109,7 @@ $ summvalgen -summ summ_strlen.c -func concrete_strlen.c --arraysize 3 5 7 -comp
 
 ## All Config file options
 
-The options allowed in the configuration file mirror some of the flags offered in the command line interface:
+The options allowed in the configuration file mirror some of the flag options offered in the command line interface:
 
 ```
 func_file  concrete.c       // -func
@@ -125,3 +125,13 @@ concrete_array {1:[0]}      // --concretearray
 lib lib.c                   // --lib
 compile_arch x86            // --compile
 ```
+
+# Special Configurations
+
+## Array Size 
+
+By passing an array of type ``[<val>,<val2>,...]`` instead of a single value, one can specify the array size of each function argument. For instance the configuration:
+```
+array_size [5,7]  // --arraysize [5,7] 
+```
+states that the **first** argument in the function must have ``size = 5`` while the **second** must have ``size = 7``.
