@@ -143,3 +143,14 @@ This options allows to specify the array indexes where null bytes should be plac
 array_size [2,3]  // --nullbytes [2,3] 
 ```
 specifies that the **first** argument is null terminated at ``index = 2`` and the **second** is null terminated at ``index = 3``.
+
+## Default Values
+This option allows to specify a constant value for an input variable. For instance assuming that the **first** function argument is ``char **endptr``, the configuration:
+```
+default_values {1:'NULL'}  // --defaultvalues {1:'NULL'}
+```
+specifies that in the validation test, the argument ``endptr`` in initialized such that:
+
+```
+char **endptr = NULL;
+```
