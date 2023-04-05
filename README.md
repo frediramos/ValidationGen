@@ -135,3 +135,11 @@ By passing an array of type ``[<val>,<val2>,...]`` instead of a single value, on
 array_size [5,7]  // --arraysize [5,7] 
 ```
 specifies that the **first** argument in the function must have ``size = 5`` and the **second** must have ``size = 7``.
+
+## Null Bytes
+
+This options allows to specify the array indexes where null bytes should be placed. By passing an array of type ``[<index1>,<index2>,...]`` instead of a single value, one can specify the null bytes index of each  argument. For instance the configuration:
+```
+array_size [2,3]  // --nullbytes [2,3] 
+```
+specifies that the **first** argument is null terminated at ``index = 2`` and the **second** is null terminated at ``index = 3``.
