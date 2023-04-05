@@ -154,3 +154,18 @@ specifies that in the validation test, the argument ``endptr`` is initialized as
 ```
 char **endptr = NULL;
 ```
+### Special ``&`` init value
+
+In some cases one may need to pass to a function a reference to a declared variable. To this end, assuming that the **first** function argument is ``char **endptr``, one can use the configuration:
+
+```
+default_values {1:'&'}  // --defaultvalues {1:'&'}
+```
+
+which generates a validation test such that:
+
+```
+char *endptr;
+foo(&endptr, ...);
+```
+
