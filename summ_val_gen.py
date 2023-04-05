@@ -26,22 +26,22 @@ def get_cmd_args():
 	parser.add_argument('--func_name', metavar='name', type=str,
 						help='Name of the concrete function in the given path')
 
-	parser.add_argument('--arraysize', metavar='value | [val1,val2]', nargs='+', type=int, required=False, default=[5],
+	parser.add_argument('--arraysize', metavar='value | [val1,val2]', nargs='+', required=False, default=[5],
 						help='Maximum array size of each test (default:5)')
 
-	parser.add_argument('--nullbytes', metavar='index | [idx1,idx2]', nargs='+', type=int, required=False, default=[],
+	parser.add_argument('--nullbytes', metavar='index | [idx1,idx2]', nargs='+', required=False, default=[],
 						help='Specify array indexes to place null bytes')
 
-	parser.add_argument('--defaultvalues', metavar='{var:value}', nargs='+', type=int, required=False, default={},
+	parser.add_argument('--defaultvalues', metavar='{var:value}', nargs='+', required=False, default={},
 						help='Specify default const values for input variables')
 
-	parser.add_argument('--maxvalue', metavar='value', nargs='+', type=int, required=False, default=[],
+	parser.add_argument('--maxvalue', metavar='value', nargs='+', required=False, default=[],
 						help='Provide an upper bound for numeric values')
 
-	parser.add_argument('--maxnames', metavar='name', nargs='+', type=int, required=False, default=[],
+	parser.add_argument('--maxnames', metavar='name', nargs='+', required=False, default=[],
 						help='Numeric value names to be constrained')
 	
-	parser.add_argument('--concretearray', metavar='{var:[indexes]}', nargs='+', type=int, required=False, default={},
+	parser.add_argument('--concretearray', metavar='{var:[indexes]}', nargs='+', required=False, default={},
 						help='Place concrete values in selected array indexes')
 
 	parser.add_argument('--lib', metavar='path', nargs='+', type=str, required=False,
@@ -102,6 +102,7 @@ def parse_config(conf) -> dict:
 			config['null_bytes'] = parse_config_list(l)
 
 		if 'max_num' in split[0]:
+			assert '[' not in l
 			config['max_num'] = parse_config_list(l)
 
 		if 'summ_name' in split[0]:
@@ -125,6 +126,7 @@ def parse_config(conf) -> dict:
 				config['func_file'] = split[1]				
 
 		if 'lib' in split[0]:
+			assert '[' not in l
 			config['lib'] = parse_config_list(l)
 
 		if 'max_names' in split[0]:
@@ -162,16 +164,16 @@ if __name__ == "__main__":
 	config_file = args.config
 	noapi = args.noAPI
 	
-	if '[' in arraysize:
+	if isinstance(arraysize[0], str) and '[' in arraysize[0]:
 		arraysize = [s for s in map(lambda x: ast.literal_eval(x), arraysize)]
 
-	if '[' in nullbytes:
+	if isinstance(arraysize[0], str) and '[' in nullbytes[0]:
 		nullbytes = [s for s in map(lambda x: ast.literal_eval(x), nullbytes)]
 
-	if '[' in default_values:
+	if isinstance(arraysize[0], str) and  '[' in default_values[0]:
 		default_values = [s for s in map(lambda x: ast.literal_eval(x), default_values)]
 
-	if '[' in concrete_array:
+	if isinstance(arraysize[0], str) and  '[' in concrete_array[0]:
 		concrete_array = [s for s in map(lambda x: ast.literal_eval(x), concrete_array)]
 
 	if config_file:
