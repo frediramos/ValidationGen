@@ -166,6 +166,28 @@ which generates a validation test such that:
 
 ```
 char *save_ptr;
-foo(&save_ptr, ...);
+foo(&save_ptr, ... );
 ```
 
+
+## Concrete Arrays
+By default all positions of an array are symbolic. One can use the ``concrete_array`` (``--concretearray``) to make certain array positions concrete.
+
+### Make indexes concrete
+To make specific array indexes hold concrete values one can pass a dictionary of the type ``{<arg>:[<indexes>]}``. For instance, the configuration:
+
+```
+concrete_array {1:[0,1]}  // --concretearray {1:[0,1]}
+```
+
+generates a test such that an array as the **first** function argument holds concrete values at indexes ``0`` and ``1``.
+
+
+### Make *N* positions concrete
+To make a number of array indexes hold concrete values one can pass a dictionary of the type ``{<arg>:['N']}``, where ``N`` is the number of indexes to be made concrete. For instance, the configuration:
+
+```
+concrete_array {1:['2']}  // --concretearray {1:['2']}
+```
+
+generates a test such that **two** random indexes of an array as the **first** function argument are concrete.
