@@ -138,7 +138,7 @@ specifies that the **first** argument in the function must have ``size = 5`` and
 
 ## Null Bytes
 
-This options allows to specify the array indexes where null bytes should be placed. By passing an array of type ``[<index1>,<index2>,...]`` instead of a single value, one can specify the null bytes index of each  argument. For instance the configuration:
+This options allows to specify the array indexes where null bytes should be placed. By passing an array of type ``[<index1>,<index2>,...]`` instead of a single value, one can specify the null bytes' index of each argument. For instance the configuration:
 ```
 array_size [2,3]  // --nullbytes [2,3] 
 ```
