@@ -149,7 +149,7 @@ This option allows to specify a constant value for an input variable to be initi
 ```
 default_values {1:'NULL'}  // --defaultvalues {1:'NULL'}
 ```
-specifies that in the validation test, the argument ``endptr`` in initialized as:
+specifies that in the validation test, the argument ``endptr`` is initialized as:
 
 ```
 char **endptr = NULL;
