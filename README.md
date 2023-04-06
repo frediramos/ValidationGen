@@ -111,7 +111,7 @@ $ summvalgen -summ summ_strlen.c -func concrete_strlen.c --arraysize 3 5 7 -comp
 
 The options allowed in the configuration file mirror some of the flag options offered in the command line interface:
 
-```
+```sh
 func_file  concrete.c       // -func            (Path to file containing the concrete function)
 summ_file  summ.c           // -summ            (Path to file containing the target summary)
 summ_name  strlen           // --summ_name      (Name of the summary in the given path)
