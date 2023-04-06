@@ -2,19 +2,19 @@
 
 ## Installation
 
-```bash
+```sh
 $ ./install.sh
 ```
 
 ### To uninstall run:
 
-```bash
+```sh
 $ ./install.sh -u
 ```
 
 # Basic Usage
 To obtain a full description of our test generatiom tool one can use the flag `-h`
-```
+```sh
 $ summvalgen -h
 ```
 
@@ -131,7 +131,7 @@ compile_arch x86            // --compile        (Compile the generated test)
 ## Array Size 
 
 By passing an array of type ``[<val>,<val2>,...]`` instead of a single value, one can specify the array size of each function argument. For instance the configuration:
-```
+```sh
 array_size [5,7]  // --arraysize [5,7] 
 ```
 specifies that the **first** argument in the function must have ``size = 5`` and the **second** must have ``size = 7``.
@@ -139,32 +139,32 @@ specifies that the **first** argument in the function must have ``size = 5`` and
 ## Null Bytes
 
 This options allows to specify the array indexes where null bytes should be placed. By passing an array of type ``[<index1>,<index2>,...]`` instead of a single value, one can specify the null bytes' index of each argument. For instance the configuration:
-```
+```sh
 array_size [2,3]  // --nullbytes [2,3] 
 ```
 specifies that the **first** argument is null terminated at ``index = 2`` and the **second** is null terminated at ``index = 3``.
 
 ## Default Values
 This option allows to specify a constant value for an input variable to be initialized with. For instance assuming that the **first** function argument is ``char **endptr``, the configuration:
-```
+```sh
 default_values {1:'NULL'}  // --defaultvalues {1:'NULL'}
 ```
 specifies that in the validation test, the argument ``endptr`` is initialized as:
 
-```
+```sh
 char **endptr = NULL;
 ```
 ### Special ``&`` init value
 
 In some cases one may need to pass to a function a reference to a declared variable. To this end, assuming that the **first** function argument is ``char **save_ptr``, one can use the configuration:
 
-```
+```sh
 default_values {1:'&'}  // --defaultvalues {1:'&'}
 ```
 
 which generates a validation test such that:
 
-```
+```sh
 char *save_ptr;
 foo(&save_ptr, ... );
 ```
@@ -176,7 +176,7 @@ By default all positions of an array are symbolic. One can use the ``concrete_ar
 ### Make indexes concrete
 To make specific array indexes hold concrete values one can pass a dictionary of the type ``{<arg>:[<indexes>]}``. For instance, the configuration:
 
-```
+```sh
 concrete_array {1:[0,1]}  // --concretearray {1:[0,1]}
 ```
 
@@ -186,7 +186,7 @@ generates a test such that an array as the **first** function argument holds con
 ### Make *N* positions concrete
 To make a number of array indexes hold concrete values one can pass a dictionary of the type ``{<arg>:['N']}``, where ``N`` is the number of indexes to be made concrete. For instance, the configuration:
 
-```
+```sh
 concrete_array {1:['2']}  // --concretearray {1:['2']}
 ```
 
