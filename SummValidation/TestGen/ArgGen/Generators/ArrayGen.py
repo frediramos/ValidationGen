@@ -31,7 +31,7 @@ class ArrayGen(DefaultGen):
         code = []
         name = self.argname.name
         
-        typedecl = TypeDecl(name, [], IdentifierType(names=[self.vartype]))
+        typedecl = TypeDecl(name, [], None, IdentifierType(names=[self.vartype]))
 
         size = self._size(self.sizes[-1])
         array = ArrayDecl(typedecl, size, [])
@@ -39,7 +39,7 @@ class ArrayGen(DefaultGen):
         for i in range(self.dimension-2, -1, -1):
             array = ArrayDecl(array,  self._size(self.sizes[i]), [])
 
-        code.append(Decl(name, [], [], [], array, const, None))
+        code.append(Decl(name, [], [], [], [], array, const, None))
         return code  
 
 
@@ -51,10 +51,10 @@ class ArrayGen(DefaultGen):
         code = []
         name = self.argname.name
 
-        typedecl = TypeDecl(name, [], IdentifierType(names=[self.vartype]))
+        typedecl = TypeDecl(name, [], None, IdentifierType(names=[self.vartype]))
 
         #sizeof(int *)
-        typtr = PtrDecl([], TypeDecl(name, [], IdentifierType([self.vartype])))
+        typtr = PtrDecl([], TypeDecl(name, [], None, IdentifierType([self.vartype])))
         for _ in range(1, self.dimension-1):
             typtr = PtrDecl([], typtr)
         sizeof = FuncCall(ID('sizeof'), ExprList([typtr]))
@@ -71,7 +71,7 @@ class ArrayGen(DefaultGen):
             arrptr = PtrDecl([], arrptr)
 
         #int **array = malloc(sizeof(int) * 10);
-        code.append(Decl(name, [], [], [], arrptr, rvalue, None))
+        code.append(Decl(name, [], [], [], [], arrptr, rvalue, None))
         
         #For 2+ dimensions (e.g array[][])
         if self.dimension > 1:
@@ -89,7 +89,7 @@ class ArrayGen(DefaultGen):
             stmt = Assignment('=', arrayref, FuncCall(ID('malloc'),ExprList([binop])))
             decls = self.For_ast(index, self._size(self.sizes[-2]), Compound([stmt]))
 
-            typtr = PtrDecl([], TypeDecl(name, [], typtr))
+            typtr = PtrDecl([], TypeDecl(name, [], None, typtr))
 
             #For 3+ dimensions (e.g array[0][1][2])
             for i in range(self.dimension-2, 0,-1):
@@ -123,7 +123,7 @@ class ArrayGen(DefaultGen):
                 self.dimension -= 1
 
             name = self.argname.name
-            typedecl = TypeDecl(name, [], IdentifierType(names=[self.vartype]))
+            typedecl = TypeDecl(name, [], None, IdentifierType(names=[self.vartype]))
             ptr = PtrDecl([], typedecl)
             for _ in range(1, self.dimension):
                 ptr = PtrDecl([], ptr)
@@ -133,7 +133,7 @@ class ArrayGen(DefaultGen):
             else:
                 rvalue = self.const_rvalue(const);
             
-            decl = Decl(name, [], [], [], ptr, rvalue, None)
+            decl = Decl(name, [], [], [], [], ptr, rvalue, None)
             return [decl]
 
 
@@ -144,8 +144,8 @@ class ArrayGen(DefaultGen):
     def For_ast(self, index, size, stmt):
 
         ##For-init
-        typedecl = TypeDecl(index, [], IdentifierType(names=['int']))
-        decl = Decl(index, [], [], [], typedecl, Constant('int', str(0)), None)
+        typedecl = TypeDecl(index, [], None, IdentifierType(names=['int']))
+        decl = Decl(index, [], [], [], [], typedecl, Constant('int', str(0)), None)
         init  = DeclList(decls=[decl])
         
         ##For-condition

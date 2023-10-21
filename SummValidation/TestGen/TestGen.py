@@ -16,11 +16,11 @@ class TestGen:
 
 
     def call_function(self, fname, call_args, ret_name, ret_type):
-        lvalue = TypeDecl(ret_name, [], IdentifierType(names=[ret_type]))
+        lvalue = TypeDecl(ret_name, [], None, IdentifierType(names=[ret_type]))
         rvalue = FuncCall(ID(fname), ExprList([a for a in map(lambda x: ID(x), call_args)]))
         if ret_type =='void':
             return rvalue  
-        return Decl(ret_name, [], [], [], lvalue, rvalue, None)
+        return Decl(ret_name, [], [], [], [], lvalue, rvalue, None)
 
 
     def tag_memory(self, gen, ptr_names, size_macro):
@@ -80,9 +80,9 @@ class TestGen:
         #Create function ast
         block = Compound(body)
         
-        typedecl = TypeDecl(name, [], IdentifierType(names=['void']))
+        typedecl = TypeDecl(name, [], None, IdentifierType(names=['void']))
         funcdecl = FuncDecl(None, typedecl)
-        decl = Decl(name, [], [], [], funcdecl, None, None)
+        decl = Decl(name, [], [], [], [], funcdecl, None, None)
         
         
         return FuncDef(decl, None, block)

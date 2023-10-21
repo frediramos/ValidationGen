@@ -21,9 +21,9 @@ class PtrFieldGen(ArrayGen):
 
         fuel = BinaryOp(op='-', left=ID('fuel'), right=Constant('int', str(1)))
         rvalue = FuncCall(ID(f'create_{fname}'),ExprList([fuel]) )
-        ifdecl = Decl(name, [], [], [], lvalue, rvalue, None)
+        ifdecl = Decl(name, [], [], [], [], lvalue, rvalue, None)
 
-        elsedecl = Decl(name, [], [], [], ptr, ID('NULL'), None)
+        elsedecl = Decl(name, [], [], [], [], ptr, ID('NULL'), None)
 
         iffuel = If(cond, Compound([ifdecl]), Compound([elsedecl]))
 

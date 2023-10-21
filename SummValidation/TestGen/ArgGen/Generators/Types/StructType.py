@@ -13,10 +13,10 @@ class StructTypeGen(DefaultGen):
         fname = self.vartype.replace(' ', '_')
 
         #Declare Variable
-        lvalue = TypeDecl(name, [], IdentifierType(names=[self.vartype]))
+        lvalue = TypeDecl(name, [], None, IdentifierType(names=[self.vartype]))
         rvalue = FuncCall(ID(f'create_{fname}'),ExprList([self.fuel]) )
 
         #Assemble declaration
-        decl = Decl(name, [], [], [], lvalue, rvalue, None)
+        decl = Decl(name, [], [], [], [], lvalue, rvalue, None)
 
         return [decl]

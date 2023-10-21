@@ -34,9 +34,9 @@ def returnValue(val, operator=None):
 
 
 def createFunction(name, args, returnType):
-	typedecl = TypeDecl(name, [], IdentifierType(names=[returnType]))
+	typedecl = TypeDecl(name, [], None, IdentifierType(names=[returnType]))
 	funcdecl = FuncDecl(args, typedecl)
-	decl = Decl(name, [], [], [], funcdecl, None, None)
+	decl = Decl(name, [], [], [], [], funcdecl, None, None)
 	return decl
 
 

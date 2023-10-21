@@ -32,8 +32,8 @@ class StructVisitor(NodeVisitor):
 	def init_args(self):
 		args = []
 		
-		typedecl = TypeDecl('fuel', [], IdentifierType(names=['int']))
-		decl = Decl('fuel', [], [], [], typedecl, None, None)
+		typedecl = TypeDecl('fuel', [], None, IdentifierType(names=['int']))
+		decl = Decl('fuel', [], [], [], [], typedecl, None, None)
 
 		args.append(decl)
 		return args
@@ -46,12 +46,12 @@ class StructVisitor(NodeVisitor):
 		typ = f'struct {struct_name}'
 		name = f'struct_{struct_name}_instance' 
 
-		lvalue = TypeDecl(name, [], IdentifierType(names=[typ]))
+		lvalue = TypeDecl(name, [], None, IdentifierType(names=[typ]))
 		rvalue = FuncCall(ID('malloc'),ExprList([FuncCall(ID('sizeof'),\
 		ExprList([ID(typ)]))]) )
 
 		#Assemble declaration
-		decl = Decl(name, [], [], [], PtrDecl([], lvalue), rvalue, None)
+		decl = Decl(name, [], [], [], [], PtrDecl([], lvalue), rvalue, None)
 
 		return decl
 

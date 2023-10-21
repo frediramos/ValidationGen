@@ -20,9 +20,9 @@ class PrimitiveTypeGen(DefaultGen):
         MAX_ID += 1
 
         max_name = f'max_{MAX_ID}'
-        lvalue = TypeDecl(max_name, [], IdentifierType(names=[self.vartype]))
+        lvalue = TypeDecl(max_name, [], None, IdentifierType(names=[self.vartype]))
         rvalue = ID(self.max_macro)
-        decl = Decl(max_name, [], [], [], lvalue, rvalue, None)
+        decl = Decl(max_name, [], [], [], [], lvalue, rvalue, None)
 
         max = UnaryOp('&', ID(max_name))
         value = UnaryOp('&', ID(name))
@@ -41,7 +41,7 @@ class PrimitiveTypeGen(DefaultGen):
         name = self.argname.name
 
         #Declare Variable
-        lvalue = TypeDecl(name, [], IdentifierType(names=[self.vartype]))
+        lvalue = TypeDecl(name, [], None, IdentifierType(names=[self.vartype]))
 
         #Make symbolic type
         if const is not None:
@@ -50,7 +50,7 @@ class PrimitiveTypeGen(DefaultGen):
             rvalue = self.symbolic_rvalue(Constant('string', f'\"{name}\"'))
 
         #Assemble declaration
-        decl = Decl(name, [], [], [], lvalue, rvalue, None)
+        decl = Decl(name, [], [], [], [], lvalue, rvalue, None)
         code.append(decl)
 
         if (self.max_macro and const is None)\

@@ -23,7 +23,7 @@ class StructFieldGen(DefaultGen):
         lvalue = StructRef(name = ID(f'{name}'), type='->', field=ID(f'{self.field}'))
     
         rvalue = self.init_struct_rvalue(self.vartype)
-        decl = Decl(name, [], [], [], lvalue, rvalue, None)
+        decl = Decl(name, [], [], [], [], lvalue, rvalue, None)
         code.append(decl)   
     
         return code
