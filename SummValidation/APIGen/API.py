@@ -34,7 +34,6 @@ standard_api = {
     'print_byte':       'void print_byte(char byte) {return;} \n',
     'maximize':         'void* maximize(symbolic sym_var, size_t length) {return NULL;} \n',
     'is_sat':           'int is_sat(cnstr_t cnstr) {return 0;}\n'
-
 }
 
 memory_api = {
