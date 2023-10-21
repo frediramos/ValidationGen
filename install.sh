@@ -7,15 +7,15 @@ SYMDIR=/usr/local/bin
 if [[ $# -eq 0 ]] ; then
 	echo "=> Intalling Pycparser"
 
-	if python3 -m pip install Pycparser==2.20; then
+	if python3 -m pip install Pycparser==2.21; then
 		echo Pycparser installed successfully
 	else
-		echo Could not install required Python dependency: Pycparser V2.20
+		echo Could not install required Python dependency: Pycparser V2.21
 		exit 1
 	fi
 
 	echo
-	echo "=> Intalling SummValidation"
+	echo "=> Intalling SummValidationGen"
 	sudo ln -sf $(pwd)/$FILE $SYMDIR/$SYMLINK
 	
 	if test $SYMLINK; then
@@ -31,7 +31,7 @@ fi
 
 
 case "$1" in
-	-u) echo "=> Uninstalling SummValidation"
+	-u) echo "=> Uninstalling SummValidationGen"
 	
 		if [ -L $SYMDIR/$SYMLINK ]; then
 			sudo unlink -f $SYMDIR/$SYMLINK
@@ -39,6 +39,6 @@ case "$1" in
 		else 
 			STATUS=1
 		fi
-		echo SummValidation Removed
+		echo SummValidationGen Removed
 		exit $STATUS	
 esac
