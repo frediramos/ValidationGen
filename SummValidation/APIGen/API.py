@@ -73,7 +73,7 @@ all_api = {
     'new_sym_var_array':        'symbolic new_sym_var_array(char* name, size_t index, size_t size) {return 0;}\n',
     'save_current_state':       'state_t save_current_state() {return 0;} \n',
     'get_cnstr':                'cnstr_t get_cnstr(symbolic var, size_t size) {return 0;} \n',
-    'store_cnstr':                 'void store_cnstr(char* name, cnstr_t constraint) {return;} \n',
+    'store_cnstr':              'void store_cnstr(char* name, cnstr_t constraint) {return;} \n',
     'halt_all':                 'void halt_all(state_t state) {return;} \n',
     'check_implications':       'result_t check_implications(char* constraint1, char* constraint2) {return 0;} \n',
     'print_counterexamples':    'void print_counterexamples(result_t result) {return;}\n',
