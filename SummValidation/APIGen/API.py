@@ -22,7 +22,7 @@ validation_api = {
     'new_sym_var_named':        'symbolic new_sym_var_named(char* name, size_t size) {return 0;}\n',
     'new_sym_var_array':        'symbolic new_sym_var_array(char* name, size_t index, size_t size) {return 0;}\n',   
     'mem_addr':                 'void mem_addr(char* name, void* addr, size_t length) {return;}\n',
-    '_ULE_':                    'int _ULE_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_ULE_':                    'cnstr_t _ULE_(symbolic var1, symbolic var2) {return 0;}\n',
     'assume':                   'void assume(cnstr_t cnstr) {return;}\n'
 }
 
@@ -37,19 +37,19 @@ standard_api = {
 
 
 constraints_api = {
-    '_EQ_' :    '_EQ_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_NEQ_':    '_NEQ_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_LT_' :    '_LT_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_LE_' :    '_LE_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_ULT_':    '_ULT_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_ULE_':    '_ULE_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_GT_' :    '_GT_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_GE_' :    '_GE_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_UGT_':    '_UGT_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_UGE_':    '_UGE_(symbolic var1, symbolic var2) {return 0;}\n',  
-    '_NOT_':    '_NOT_(cnstr_t cnstr) {return 0;}\n',
-    '_OR_' :    '_OR_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n',
-    '_AND_':    '_AND_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n'
+    '_EQ_' :    'cnstr_t _EQ_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_NEQ_':    'cnstr_t _NEQ_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_LT_' :    'cnstr_t _LT_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_LE_' :    'cnstr_t _LE_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_ULT_':    'cnstr_t _ULT_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_ULE_':    'cnstr_t _ULE_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_GT_' :    'cnstr_t _GT_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_GE_' :    'cnstr_t _GE_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_UGT_':    'cnstr_t _UGT_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_UGE_':    'cnstr_t _UGE_(symbolic var1, symbolic var2) {return 0;}\n',  
+    '_NOT_':    'cnstr_t _NOT_(cnstr_t cnstr) {return 0;}\n',
+    '_OR_' :    'cnstr_t _OR_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n',
+    '_AND_':    'cnstr_t _AND_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n'
 }
 
 #Merge all 
@@ -69,19 +69,19 @@ all_api = {
     'assume':                   'void assume(cnstr_t cnstr) {return;}\n',
     'is_certain':               'int is_certain(cnstr_t cnstr){return 0;}\n',
     '_assert':                  'void _assert(int expr){return;}\n',
-    '_EQ_' :                    '_EQ_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_NEQ_':                    '_NEQ_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_LT_' :                    '_LT_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_LE_' :                    '_LE_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_ULT_':                    '_ULT_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_ULE_':                    '_ULE_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_GT_' :                    '_GT_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_GE_' :                    '_GE_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_UGT_':                    '_UGT_(symbolic var1, symbolic var2) {return 0;}\n',
-    '_UGE_':                    '_UGE_(symbolic var1, symbolic var2) {return 0;}\n',  
-    '_NOT_':                    '_NOT_(cnstr_t cnstr) {return 0;}\n',
-    '_OR_' :                    '_OR_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n',
-    '_AND_':                    '_AND_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n'               
+    '_EQ_' :                    'cnstr_t _EQ_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_NEQ_':                    'cnstr_t _NEQ_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_LT_' :                    'cnstr_t _LT_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_LE_' :                    'cnstr_t _LE_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_ULT_':                    'cnstr_t _ULT_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_ULE_':                    'cnstr_t _ULE_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_GT_' :                    'cnstr_t _GT_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_GE_' :                    'cnstr_t _GE_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_UGT_':                    'cnstr_t _UGT_(symbolic var1, symbolic var2) {return 0;}\n',
+    '_UGE_':                    'cnstr_t _UGE_(symbolic var1, symbolic var2) {return 0;}\n',  
+    '_NOT_':                    'cnstr_t _NOT_(cnstr_t cnstr) {return 0;}\n',
+    '_OR_' :                    'cnstr_t _OR_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n',
+    '_AND_':                    'cnstr_t _AND_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n'            
 }
 
 
