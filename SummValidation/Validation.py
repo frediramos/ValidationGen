@@ -61,6 +61,8 @@ class ValidationGenerator(CGenerator):
 			call_vis = FCallsVisitor()
 			call_vis.visit(summ_def)
 			calls = call_vis.fcalls()
+			if not calls:
+				calls = API.all_api.keys()
 
 			#Check if calls are api functions	
 			#Only add stubs for functions not already added by API.validation_api
