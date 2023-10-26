@@ -13,7 +13,7 @@ class PrimitiveTypeGen(DefaultGen):
 
 
     #size_t max = MAX_NUM_1;
-    #assume(_solver_LE(&n, &max, sizeof(size_t) * 8));
+    #assume(_ULE_(&n, &max, sizeof(size_t) * 8));
     
     def _limit_max(self, name):
         global MAX_ID
@@ -24,11 +24,11 @@ class PrimitiveTypeGen(DefaultGen):
         rvalue = ID(self.max_macro)
         decl = Decl(max_name, [], [], [], [], lvalue, rvalue, None)
 
-        max = UnaryOp('&', ID(max_name))
-        value = UnaryOp('&', ID(name))
-        size = self.type_size(self.vartype)
+        max =  ID(max_name)
+        value = ID(name)
+        # size = self.type_size(self.vartype)
 
-        le = FuncCall(ID('_solver_LE'), ExprList([value, max, size]))
+        le = FuncCall(ID('_ULE_'), ExprList([value, max]))
         assume = FuncCall(ID('assume'), ExprList([le]))
 
         return[decl, assume]
