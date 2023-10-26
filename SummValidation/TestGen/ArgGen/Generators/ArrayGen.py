@@ -165,7 +165,7 @@ class ArrayGen(DefaultGen):
 
         #Create Rvalue
         sizeof = ExprList([name, index, multiply])
-        rvalue = FuncCall(ID('new_sym_var_array'), sizeof)
+        rvalue = FuncCall(ID('sym_var_array'), sizeof)
 
         return rvalue
     
