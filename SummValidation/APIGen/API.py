@@ -32,7 +32,9 @@ standard_api = {
     'is_symbolic':      'int is_symbolic(symbolic sym_var) {return 0;} \n',
     'assume':           'void assume(cnstr_t cnstr) {return;}\n',
     'is_certain':       'int is_certain(cnstr_t cnstr){return 0;}\n',
-    '_assert':          'void _assert(int expr){return;}\n'
+    '_assert':          'void _assert(int expr){return;}\n',
+    'push_pc':          'void push_pc(){return;}\n',
+    'pop_pc':           'void pop_pc(){return;}\n',
 }
 
 
@@ -49,7 +51,9 @@ constraints_api = {
     '_UGE_':    'cnstr_t _UGE_(symbolic var1, symbolic var2) {return 0;}\n',  
     '_NOT_':    'cnstr_t _NOT_(cnstr_t cnstr) {return 0;}\n',
     '_OR_' :    'cnstr_t _OR_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n',
-    '_AND_':    'cnstr_t _AND_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n'
+    '_AND_':    'cnstr_t _AND_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n',
+    '_ITE_':    'cnstr_t _ITE_(cnstr_t cnstr1, cnstr_t cnstr2, cnstr_t cnstr3) {return 0;}\n',
+    '_ITE_VAR_':'cnstr_t _ITE_VAR_(cnstr_t cnstr1, symbolic var1, symbolic var2) {return 0;}\n' 
 }
 
 #Merge all 
@@ -69,6 +73,8 @@ all_api = {
     'assume':                   'void assume(cnstr_t cnstr) {return;}\n',
     'is_certain':               'int is_certain(cnstr_t cnstr){return 0;}\n',
     '_assert':                  'void _assert(int expr){return;}\n',
+    'push_pc':                  'void push_pc(){return;}\n',
+    'pop_pc':                   'void pop_pc(){return;}\n',
     '_EQ_' :                    'cnstr_t _EQ_(symbolic var1, symbolic var2) {return 0;}\n',
     '_NEQ_':                    'cnstr_t _NEQ_(symbolic var1, symbolic var2) {return 0;}\n',
     '_LT_' :                    'cnstr_t _LT_(symbolic var1, symbolic var2) {return 0;}\n',
@@ -81,7 +87,9 @@ all_api = {
     '_UGE_':                    'cnstr_t _UGE_(symbolic var1, symbolic var2) {return 0;}\n',  
     '_NOT_':                    'cnstr_t _NOT_(cnstr_t cnstr) {return 0;}\n',
     '_OR_' :                    'cnstr_t _OR_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n',
-    '_AND_':                    'cnstr_t _AND_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n'            
+    '_AND_':                    'cnstr_t _AND_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n',
+    '_ITE_':                    'cnstr_t _ITE_(cnstr_t cnstr1, cnstr_t cnstr2, cnstr_t cnstr3) {return 0;}\n',
+    '_ITE_VAR_':                'cnstr_t _ITE_VAR_(cnstr_t cnstr1, symbolic var1, symbolic var2) {return 0;}\n' 
 }
 
 
