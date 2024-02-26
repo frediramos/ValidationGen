@@ -1,4 +1,5 @@
-import os
+from os.path import dirname, realpath
+from os.path import join as join_path
 
 from pycparser import parse_file
 from pycparser.c_ast import *
@@ -8,11 +9,7 @@ MAX_MACRO = 'MAX_NUM'
 ARRAY_SIZE_MACRO = 'ARRAY_SIZE'
 POINTER_SIZE_MACRO = 'POINTER_SIZE'
 FUEL_MACRO = 'FUEL'
-
-FAKE_LIBC = os.path.dirname \
-			(os.path.dirname \
-			(os.path.dirname(__file__))) + '/Fake_libc/fake_libc_include'
-
+FAKE_LIBC = join_path(dirname(realpath(__file__)), '..', '..', 'Fake_libc', 'fake_libc_include')
 
 def parseFile(file, fakelib=FAKE_LIBC):
 	ast = parse_file(file, use_cpp=True,

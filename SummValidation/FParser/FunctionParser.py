@@ -1,5 +1,3 @@
-from pycparser import parse_file
-
 from SummValidation.TestGen.ArgGen import Symbolic_Args
 from SummValidation.Utils import utils
 
