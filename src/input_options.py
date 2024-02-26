@@ -89,47 +89,48 @@ def parse_config_file(conf) -> dict:
 			continue
 
 		split = l.split(' ')
-		if 'array_size' in split[0]:
+		option = split[0]
+		if 'array_size' in option:
 			config['array_size'] = parse_config_list(l)
 
-		if 'null_bytes' in split[0]:
+		if 'null_bytes' in option:
 			config['null_bytes'] = parse_config_list(l)
 
-		if 'max_num' in split[0]:
+		if 'max_num' in option:
 			assert '[' not in l
 			config['max_num'] = parse_config_list(l)
 
-		if 'summ_name' in split[0]:
+		if 'summ_name' in option:
 			if len(split) == 2:
 				config['summ_name'] = split[1]
 
-		if 'func_name' in split[0]:
+		if 'func_name' in option:
 			if len(split) == 2:
 				config['func_name'] = split[1]
 		
-		if 'compile_arch' in split[0]:
+		if 'compile_arch' in option:
 			if len(split) == 2:
 				config['compile_arch'] = split[1]
 		
-		if 'summ_file' in split[0]:
+		if 'summ_file' in option:
 			if len(split) == 2:
 				config['summ_file'] = split[1]
 
-		if 'func_file' in split[0]:
+		if 'func_file' in option:
 			if len(split) == 2:
 				config['func_file'] = split[1]				
 
-		if 'lib' in split[0]:
+		if 'lib' in option:
 			assert '[' not in l
 			config['lib'] = parse_config_list(l)
 
-		if 'max_names' in split[0]:
+		if 'max_names' in option:
 			config['max_names'] = [n for n in split[1:]]
 
-		if 'default_values' in split[0]:
+		if 'default_values' in option:
 			config['default_values'] = parse_config_dict(l)
 
-		if 'concrete_array' in split[0]:
+		if 'concrete_array' in option:
 			config['concrete_array'] = parse_config_dict(l)
 
 	return config
@@ -140,23 +141,18 @@ def parse_input_args(args=None):
 	# Parse command line args
 	args = parse_cmd_args(args)
 
-	arraysize = args.arraysize
-	nullbytes = args.nullbytes
-	concrete_array = args.concretearray
-	default_values = args.defaultvalues
+	def eval_ast(array):
+		if array and isinstance(array[0], str):
+			if '[' in array[0] or '{' in array[0]:
+				return list(map(lambda x: ast.literal_eval(x), array))
+		return array
+
+	args.arraysize = eval_ast(args.arraysize)
+	args.nullbytes = eval_ast(args.nullbytes)
+	args.concretearray = eval_ast(args.concretearray)
+	args.defaultvalues = eval_ast(args.defaultvalues)
+
 	config_file = args.config
-	
-	if isinstance(arraysize[0], str) and '[' in arraysize[0]:
-		args.arraysize = [s for s in map(lambda x: ast.literal_eval(x), arraysize)]
-
-	if isinstance(arraysize[0], str) and '[' in nullbytes[0]:
-		args.nullbytes = [s for s in map(lambda x: ast.literal_eval(x), nullbytes)]
-
-	if isinstance(arraysize[0], str) and  '[' in default_values[0]:
-		args.defaultvalues = [s for s in map(lambda x: ast.literal_eval(x), default_values)]
-
-	if isinstance(arraysize[0], str) and  '[' in concrete_array[0]:
-		args.concretearray = [s for s in map(lambda x: ast.literal_eval(x), concrete_array)]
 
 	# Parse config file
 	if config_file:
