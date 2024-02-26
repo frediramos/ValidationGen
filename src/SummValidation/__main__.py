@@ -67,17 +67,17 @@ def parse_config_dict(line):
 	
 	if '{' in line:
 		value_sets  = re.findall(r'(\{[^\}]*\})+', line)
-		return [s for s in map(lambda x: ast.literal_eval(x), value_sets)]
+		return list(map(lambda x: ast.literal_eval(x), value_sets))
 
 def parse_config_list(line):
 	
 	if '[' in line:
 		size_sets  = re.findall(r'(\[[^\]]*\])+', line)
-		return [s for s in map(lambda x: ast.literal_eval(x), size_sets)]
+		return list(map(lambda x: ast.literal_eval(x), size_sets))
 
 	else:
 		split = line.split(' ')
-		return [size for size in map(lambda x: int(x), split[1:])]
+		return list(size for size in map(lambda x: int(x), split[1:]))
 
 
 
