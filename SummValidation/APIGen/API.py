@@ -19,8 +19,8 @@ validation_api = {
     'halt_all':                 'void halt_all(state_t state) {return;}\n',
     'check_implications':       'result_t check_implications(char* constraint1, char* constraint2) {return 0;}\n',
     'print_counterexamples':    'void print_counterexamples(result_t result) {return;}\n',
-    'new_sym_var_named':        'symbolic new_sym_var_named(char* name, size_t size) {return 0;}\n',
-    'new_sym_var_array':        'symbolic new_sym_var_array(char* name, size_t index, size_t size) {return 0;}\n',   
+    'sym_var_named':            'symbolic sym_var_named(char* name, size_t size) {return 0;}\n',
+    'sym_var_array':            'symbolic sym_var_array(char* name, size_t index, size_t size) {return 0;}\n',   
     'mem_addr':                 'void mem_addr(char* name, void* addr, size_t length) {return;}\n',
     '_ULE_':                    'cnstr_t _ULE_(symbolic var1, symbolic var2) {return 0;}\n',
     'assume':                   'void assume(cnstr_t cnstr) {return;}\n'
