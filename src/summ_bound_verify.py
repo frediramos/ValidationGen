@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import ast
 import sys
 import traceback
 from argparse import Namespace
