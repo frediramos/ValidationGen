@@ -2,7 +2,9 @@ import sys
 import ast
 import re
 
-from SummValidation import ValidationGenerator, CCompiler
+from .Validation import ValidationGenerator
+from .CCompiler import CCompiler
+
 
 def parse_config_dict(line):
 	

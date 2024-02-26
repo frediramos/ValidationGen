@@ -1,6 +1,6 @@
+import os
 import sys
 import traceback
-import os
 
 class CGenerator:
 	def __init__(self, outputfile, concrete_file, summary_file, fakelib=None):

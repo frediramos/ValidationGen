@@ -1,4 +1,3 @@
-from pycparser import parse_file, c_generator
 from pycparser.c_ast import *
 
 from ..DefaultGen import DefaultGen
