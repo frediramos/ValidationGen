@@ -1,4 +1,3 @@
 from SummValidation.Validation import ValidationGenerator
 from SummValidation.CCompiler import CCompiler
 from SummValidation.CGenerator import CGenerator
-from SummValidation.FrontEnd import runValidationGen

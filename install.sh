@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SYMDIR=/usr/local/bin
-SUMMBV_PY=SummBoundVerify.py
+SUMMBV_PY=src/summ_bound_verify.py
 SUMMBV=summbv
 ANGR_VERSION=9.2.6
 VIRTUALENV_NAME=angr

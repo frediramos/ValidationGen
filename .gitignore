@@ -40,8 +40,8 @@ output[0-9_]*.c
 
 #Validation tests
 # Validation files
-/Examples/**/*.test
-/Examples/**/*_validation.c
+/**/*.test
+/**/*_validation.c
 
 # Ast
 ast.txt
