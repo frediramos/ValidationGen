@@ -77,7 +77,7 @@ def parse_config_list(line):
 
 	else:
 		split = line.split(' ')
-		return list(size for size in map(lambda x: int(x), split[1:]))
+		return list(map(lambda x: int(x), split[1:]))
 
 
 
