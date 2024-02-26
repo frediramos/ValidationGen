@@ -1,11 +1,14 @@
-#!/usr/bin/env python3
-
+import re
+import ast
+import sys
 import argparse
+import traceback
+from argparse import Namespace
 
-from .FrontEnd import runValidationGen
+from . Validation import ValidationGenerator
+from . CCompiler import CCompiler
 
-
-def get_cmd_args():
+def parse_cmd_args(args=None):
 	parser = argparse.ArgumentParser(description='Generate Summary Validation Tests')
 
 	parser.add_argument('-o', metavar='name', type=str, required=False, default='test.c',
@@ -56,13 +59,224 @@ def get_cmd_args():
 	parser.add_argument('-config', metavar='path', type=str, required=False,
 						help='Config file')
 
+	return parser.parse_args(args)
 
-	return parser.parse_args()
 
 
+def parse_config_dict(line):
+	
+	if '{' in line:
+		value_sets  = re.findall(r'(\{[^\}]*\})+', line)
+		return [s for s in map(lambda x: ast.literal_eval(x), value_sets)]
+
+def parse_config_list(line):
+	
+	if '[' in line:
+		size_sets  = re.findall(r'(\[[^\]]*\])+', line)
+		return [s for s in map(lambda x: ast.literal_eval(x), size_sets)]
+
+	else:
+		split = line.split(' ')
+		return [size for size in map(lambda x: int(x), split[1:])]
+
+
+
+def parse_config_file(conf) -> dict:
+	f = open(conf, "r")
+	lines = f.readlines()
+	f.close()
+
+	config = {}
+
+	for l in lines:
+		l = l.strip()
+
+		if l.startswith('//'):
+			continue
+
+		split = l.split(' ')
+		if 'array_size' in split[0]:
+			config['array_size'] = parse_config_list(l)
+
+		if 'null_bytes' in split[0]:
+			config['null_bytes'] = parse_config_list(l)
+
+		if 'max_num' in split[0]:
+			assert '[' not in l
+			config['max_num'] = parse_config_list(l)
+
+		if 'summ_name' in split[0]:
+			if len(split) == 2:
+				config['summ_name'] = split[1]
+
+		if 'func_name' in split[0]:
+			if len(split) == 2:
+				config['func_name'] = split[1]
+		
+		if 'compile_arch' in split[0]:
+			if len(split) == 2:
+				config['compile_arch'] = split[1]
+		
+		if 'summ_file' in split[0]:
+			if len(split) == 2:
+				config['summ_file'] = split[1]
+
+		if 'func_file' in split[0]:
+			if len(split) == 2:
+				config['func_file'] = split[1]				
+
+		if 'lib' in split[0]:
+			assert '[' not in l
+			config['lib'] = parse_config_list(l)
+
+		if 'max_names' in split[0]:
+			config['max_names'] = [n for n in split[1:]]
+
+		if 'default_values' in split[0]:
+			config['default_values'] = parse_config_dict(l)
+
+		if 'concrete_array' in split[0]:
+			config['concrete_array'] = parse_config_dict(l)
+
+	return config
+
+
+def parse_input_args(args=None):
+
+	# Parse command line args
+	args = parse_cmd_args(args)
+
+	arraysize = args.arraysize
+	nullbytes = args.nullbytes
+	concrete_array = args.concretearray
+	default_values = args.defaultvalues
+	config_file = args.config
+	
+	if isinstance(arraysize[0], str) and '[' in arraysize[0]:
+		args.arraysize = [s for s in map(lambda x: ast.literal_eval(x), arraysize)]
+
+	if isinstance(arraysize[0], str) and '[' in nullbytes[0]:
+		args.nullbytes = [s for s in map(lambda x: ast.literal_eval(x), nullbytes)]
+
+	if isinstance(arraysize[0], str) and  '[' in default_values[0]:
+		args.defaultvalues = [s for s in map(lambda x: ast.literal_eval(x), default_values)]
+
+	if isinstance(arraysize[0], str) and  '[' in concrete_array[0]:
+		args.concretearray = [s for s in map(lambda x: ast.literal_eval(x), concrete_array)]
+
+	# Parse config file
+	if config_file:
+		
+		config = parse_config_file(config_file)
+		keys = config.keys()
+
+		if 'array_size' in keys:
+			args.arraysize = config['array_size']
+
+		if 'null_bytes' in keys:
+			args.nullbytes = config['null_bytes']
+
+		if 'max_num' in keys:
+			args.maxvalue = config['max_num']
+
+		if 'summ_name' in keys:
+			args.summ_name = config['summ_name']			
+
+		if 'func_name' in keys:
+			args.func_name = config['func_name']			
+		
+		if 'compile_arch' in keys:
+			args.compile = config['compile_arch']		
+
+		if 'summ_file' in keys:
+			args.summ = config['summ_file']	
+
+		if 'func_file' in keys:
+			args.func = config['func_file']	
+		
+		if 'lib' in keys:
+			args.lib = config['lib']	
+
+		if 'max_names' in keys:
+			args.max_names = config['max_names']
+
+		if 'default_values' in keys:
+			args.defaultvalues = config['default_values']
+		
+		if 'concrete_array' in keys:
+			args.concretearray = config['concrete_array']
+	
+	return args
+
+
+def compileValidationTest(arch, file:str, libs):
+	bin_name = file[:-2] + '.test' #Remove '.c' + .test
+	comp = CCompiler(arch, file, bin_name, libs)
+	comp.compile()
+	return bin_name
+
+
+#Takes command line / config file arguments
+def runValidationGen(args: Namespace):
+	'''
+	Take command line args and run the test generation
+	@args: \'argparse\' Namespace object
+	'''
+	concrete_function = args.func
+	target_summary = args.summ
+	outputfile = args.o
+	arraysize = args.arraysize
+	nullbytes = args.nullbytes
+	concrete_array = args.concretearray
+	maxvalue = args.maxvalue
+	max_names = args.maxnames
+	summ_name = args.summ_name
+	func_name = args.func_name
+	default_values = args.defaultvalues
+	memory = args.memory
+	noapi = args.noAPI
+	
+
+	if not concrete_function and not target_summary:
+		sys.exit('ERROR: At least the code for a concrete function or summary MUST be provided')
+
+	if not concrete_function and not func_name:
+		msg = ("ERROR: No concrete function code or name provided\n"
+				"INFO: In the absence of the code, a name must be specified in order to call the function")
+		sys.exit(msg)
+
+	if not target_summary and not summ_name:
+		msg = ("ERROR: No summary code or name provided\n"
+				"INFO: In the absence of the code, a name must be specified in order to call the summary")
+		sys.exit(msg)
+
+
+	valgenerator = ValidationGenerator(concrete_function, target_summary, outputfile,
+				    					arraysize=arraysize, nullbytes=nullbytes,
+										maxnum=maxvalue, maxnames=max_names,
+										default=default_values, concrete_arrays=concrete_array,
+									    memory=memory,
+										cncrt_name=func_name, summ_name=summ_name,
+										no_api=noapi)
+	file = valgenerator.gen()
+
+	assert(file == outputfile)
+	return file
+
+
+def main():
+	try:
+		args = parse_input_args()
+		test = runValidationGen(args)
+		if args.compile:
+			arch = args.compile
+			libs = args.lib
+			compileValidationTest(arch, test, libs)
+
+	except Exception:
+		print(traceback.format_exc(), end='')
+		return 1
+	return 0
 
 if __name__ == "__main__":
-	
-	#Command line arguments
-	args = get_cmd_args()
-	runValidationGen(args)
+	sys.exit(main())
