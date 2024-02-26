@@ -1,0 +1,4 @@
+summ_file memcpy.c
+func_file concrete.c
+max_num 5
+compile_arch x86

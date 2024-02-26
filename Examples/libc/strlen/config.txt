@@ -1,0 +1,4 @@
+array_size 3
+func_file concrete.c
+summ_name strlen
+compile_arch x86
