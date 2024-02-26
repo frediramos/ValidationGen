@@ -2,6 +2,8 @@ import sys
 import ast
 import re
 
+from argparse import Namespace
+
 from .Validation import ValidationGenerator
 from .CCompiler import CCompiler
 
@@ -86,8 +88,12 @@ def parse_config(conf) -> dict:
 
 
 #Takes command line arguments
-def runValidationGen(args):
-		
+def runValidationGen(args: Namespace):
+	'''
+	Take command line args and run the test generation
+	@args: \'argparse\' Namespace object
+	'''
+
 	concrete_function = args.func
 	target_summary = args.summ
 	outputfile = args.o
