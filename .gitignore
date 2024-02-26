@@ -39,12 +39,9 @@ out[0-9_]*.c
 output[0-9_]*.c
 
 #Validation tests
-test*.c
-test*
-conf.txt
-config.txt
-*_results.txt
-*_results.json
+# Validation files
+/Examples/**/*.test
+/Examples/**/*_validation.c
 
 # Ast
 ast.txt
