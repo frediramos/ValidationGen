@@ -3,7 +3,7 @@ import ast
 import argparse
 
 def parse_cmd_args(args=None):
-	parser = argparse.ArgumentParser(description='Generate Summary Validation Tests')
+	parser = argparse.ArgumentParser(prog='summvb', description='Generate Summary Validation Tests')
 
 	parser.add_argument('-o', metavar='name', type=str, required=False, default='test.c',
 						help='Test output name')
