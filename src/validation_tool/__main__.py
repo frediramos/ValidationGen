@@ -7,7 +7,7 @@ import argparse
 
 from .engine import angrEngine
 
-def get_cmd_args(progname, input=None):
+def parse_cmd_args(progname, input=None):
 
 	module_usage = f'python3 -m {progname}'
 	parser = argparse.ArgumentParser(prog=module_usage, description='angr extension for summary testing/validation')
@@ -49,7 +49,7 @@ def main():
 	prog = os.path.normpath(sys.argv[0]).split(os.sep)[-2]
 
 	try:
-		args = get_cmd_args(prog)
+		args = parse_cmd_args(prog)
 		engine = angrEngine(args.binary, timeout=args.timeout,
 							save_stats=args.stats, save_paths=args.save_paths,
 							stats_dir=args.results, paths_dir=args.paths,

@@ -1,3 +1,4 @@
+import os
 import re
 import ast
 import sys
@@ -8,8 +9,10 @@ from argparse import Namespace
 from .validation import ValidationGenerator
 from .c_compiler import CCompiler
 
-def parse_cmd_args(args=None):
-	parser = argparse.ArgumentParser(description='Generate Summary Validation Tests')
+def parse_cmd_args(progname, input=None):
+
+	module_usage = f'python3 -m {progname}'
+	parser = argparse.ArgumentParser(prog=module_usage, description='Generate Summary Validation Tests')
 
 	parser.add_argument('-o', metavar='name', type=str, required=False, default='test.c',
 						help='Test output name')
@@ -59,8 +62,7 @@ def parse_cmd_args(args=None):
 	parser.add_argument('-config', metavar='path', type=str, required=False,
 						help='Config file')
 
-	return parser.parse_args(args)
-
+	return parser.parse_args(input)
 
 
 def parse_config_dict(line):
@@ -251,8 +253,10 @@ def runValidationGen(args: Namespace):
 
 
 def main():
+	prog = os.path.normpath(sys.argv[0]).split(os.sep)[-2]
+
 	try:
-		args = parse_input_args()
+		args = parse_input_args(prog)
 		test = runValidationGen(args)
 		if args.compile:
 			arch = args.compile
