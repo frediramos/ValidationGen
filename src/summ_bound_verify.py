@@ -4,7 +4,7 @@ import sys
 import traceback
 from argparse import Namespace
 
-from SummValidation import ValidationGenerator, CCompiler
+from summValidation import ValidationGenerator, CCompiler
 
 from input_options import parse_input_args
 
