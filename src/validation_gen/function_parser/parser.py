@@ -1,5 +1,6 @@
-from summValidation.test_gen.arg_gen import Symbolic_Args
-from summValidation.utils import utils
+from ..test_gen.arg_gen import Symbolic_Args
+
+from  ..utils import utils
 
 from .fexception import FunctionException
 from .visitors import FunctionVisitor, ReturnTypeVisior

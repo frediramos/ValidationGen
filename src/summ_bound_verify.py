@@ -4,9 +4,8 @@ import sys
 import traceback
 from argparse import Namespace
 
-from summValidation import ValidationGenerator, CCompiler
-
 from input_options import parse_input_args
+from validation_gen import ValidationGenerator, CCompiler
 
 
 def compileValidationTest(arch, file:str, libs):
