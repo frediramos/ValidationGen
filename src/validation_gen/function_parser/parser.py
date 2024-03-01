@@ -128,7 +128,7 @@ class FunctionParser():
 		message = None
 
 		if file.startswith(self.tmp):
-			file = file[4:]
+			file = file.lstrip(self.tmp)
 
 		if len(names) == 0:
 			message = f"ERROR: No {ftype}(s) provided in: \'{file}\'"
@@ -136,7 +136,7 @@ class FunctionParser():
 		
 		if fname:
 			if fname not in names:
-				message = f"ERROR: {ftype} not found in the given file: \'{file}\'"
+				message = f"ERROR: {ftype} ({fname}) not found in the given file: \'{file}\'"
 				raise FunctionException(message)
 			
 			else:

@@ -62,8 +62,9 @@ def main():
 			libs = args.lib
 			compileValidationTest(arch, test, libs)
 
-	except Exception:
-		print(traceback.format_exc(), end='')
+	except Exception as e:
+		print(traceback.format_exc())
+		print(e)
 		return 1
 	return 0
 

@@ -203,19 +203,16 @@ class ValidationGenerator(CGenerator):
 	#Generate summary validation test
 	def gen(self):
 		try:
-			try:
-				fparser = FunctionParser(self.tmp_concrete, self.tmp_summary)
-				
-				cname, sname,\
-				function_defs, args,\
-				ret_type = fparser.parse(self.cncrt_name, self.summ_name)
-				
-				self.cncrt_name = cname
-				self.summ_name = sname
-						
-			except FunctionException as e:
-				self.exit(str(e))
+
+			fparser = FunctionParser(self.tmp_concrete, self.tmp_summary)
 			
+			cname, sname,\
+			function_defs, args,\
+			ret_type = fparser.parse(self.cncrt_name, self.summ_name)
+			
+			self.cncrt_name = cname
+			self.summ_name = sname
+								
 			header = self.gen_headers(function_defs)	
 
 			#If one the functions is not provided
@@ -247,8 +244,6 @@ class ValidationGenerator(CGenerator):
 			self.remove_files(self.tmp_concrete, self.tmp_summary)
 			return self.outputfile
 
-		except Exception:
+		except Exception as e:
 			self.remove_files(self.tmp_concrete, self.tmp_summary)
-			print(traceback.format_exc())
-			return None
-
+			raise e
