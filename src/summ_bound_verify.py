@@ -46,7 +46,7 @@ def runValidationGen(args: Namespace):
 										default=args.defaultvalues, concrete_arrays=args.concretearray,
 									    memory=args.memory,
 										cncrt_name=func_name, summ_name=summ_name,
-										no_api=args.noAPI)
+										no_api=args.no_api)
 	file = valgenerator.gen()
 
 	assert(file == outputfile)
