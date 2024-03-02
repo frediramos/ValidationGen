@@ -36,8 +36,8 @@ class CGenerator:
 			return tmp_file
 
 		except Exception:
-			print(traceback.format_exc())
-			self._exit(f'{file} not found')
+			print(traceback.format_exc(), end='')
+			self.exit(f'{file} not found')
 	
 	def remove_files(self, *files):
 		for f in files:
