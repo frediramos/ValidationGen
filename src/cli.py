@@ -1,38 +1,8 @@
 import ast
 import argparse
 
+from options import Options, OptionTypes
 from config_file import parse_config_file
-
-class OptionTypes:
-
-	BOOL   = 'boolean'
-	SIMPLE = 'simple'
-	LIST   = 'list' 
-	NESTED = 'nested'
-	DICT   = 'dict'
-
-class Options():
-
-	def __init__(self) -> None:
-		self.o = ('-', 'o', OptionTypes.SIMPLE)
-		self.func = ('-', 'func', OptionTypes.SIMPLE)
-		self.summ = ('-', 'summ', OptionTypes.SIMPLE)
-		self.summ_name = ('--', 'summ_name', OptionTypes.SIMPLE)
-		self.func_name = ('--', 'func_name', OptionTypes.SIMPLE)
-		self.arraysize = ('--', 'arraysize', OptionTypes.NESTED)
-		self.nullbytes = ('--', 'nullbytes', OptionTypes.NESTED)
-		self.defaultvalues = ('--', 'defaultvalues', OptionTypes.NESTED)
-		self.maxvalue = ('--', 'maxvalue', OptionTypes.LIST)
-		self.maxnames = ('--', 'maxnames', OptionTypes.LIST)
-		self.concretearray = ('--', 'concretearray', OptionTypes.DICT)
-		self.lib = ('--', 'lib', OptionTypes.LIST)
-		self.no_api = ('-', 'no_api', OptionTypes.BOOL)
-		self.compile = ('--', 'compile', OptionTypes.SIMPLE)
-		self.memory = ('-', 'memory', OptionTypes.BOOL)
-		self.config = ('-', 'config', OptionTypes.SIMPLE)
-
-Options = Options()
-
 
 def parse_cmd_args(input=None):
 
@@ -50,10 +20,10 @@ def parse_cmd_args(input=None):
 	parser.add_argument(flag(Options.summ), metavar='file', type=str,
 						help='Path to file containing the target summary')
 
-	parser.add_argument(flag(Options.summ_name), metavar='name', type=str,
+	parser.add_argument(flag(Options.summname), metavar='name', type=str,
 						help='Name of the summary in the given path')
 	
-	parser.add_argument(flag(Options.func_name), metavar='name', type=str,
+	parser.add_argument(flag(Options.funcname), metavar='name', type=str,
 						help='Name of the concrete function in the given path')
 
 	parser.add_argument(flag(Options.arraysize), metavar='value | [val1,val2]', nargs='+', required=False, default=[5],
@@ -77,7 +47,7 @@ def parse_cmd_args(input=None):
 	parser.add_argument(flag(Options.lib), metavar='path', nargs='+', type=str, required=False,
 						help='Path to external files needed to compile the test binary')
 
-	parser.add_argument(flag(Options.no_api), action='store_true',
+	parser.add_argument(flag(Options.noapi), action='store_true',
 						help='Do not include the Validation API stubs')
 
 	parser.add_argument(flag(Options.compile), const='x86', choices=['x86', 'x64'], nargs='?',
@@ -105,7 +75,7 @@ def parse_input_args(input=None):
 
 	# Parse command line args
 	args = parse_cmd_args(input)
-	options = vars(Options).values()
+	options = Options.values()
 	complex = [OptionTypes.NESTED, OptionTypes.DICT]
 
 	#Convert complex options string to Python ast
@@ -113,9 +83,8 @@ def parse_input_args(input=None):
 		parsed = eval_ast(getattr(args, arg[1]))
 		setattr(args, arg[1], parsed)
 
-	config_file = args.config
-
 	# Parse config file and override cmd args
+	config_file = args.config
 	if config_file:
 		
 		config = parse_config_file(config_file)

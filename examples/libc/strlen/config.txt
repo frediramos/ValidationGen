@@ -1,4 +1,4 @@
 arraysize 3
 func concrete.c
-summ_name strlen
+summname strlen
 compile x86

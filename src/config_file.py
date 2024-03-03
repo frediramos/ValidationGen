@@ -1,35 +1,74 @@
 import re
 import ast
+import sys
 
-def parse_config_dict(line):
+from options import Options, OptionTypes
+
+def _get_simple(line:str):
+	tokens = line.split()
+	opt = tokens[0]
 	
+	if len(tokens) != 2:
+		msg =  f'Option {opt} in config file takes exactly one argument'
+		sys.exit(msg)
+	
+	if '{' in line or '[' in line:
+		msg =  f'Option {opt} in config file takes a simple argument (non-list, non-dict)'
+		sys.exit(msg)
+	
+	return opt, tokens[1]
+
+
+def parse_boolean(line:str):
+	opt, arg = _get_simple(line)
+	arg = arg.capitalize()
+
+	if not(arg == 'True' or arg == 'False'):
+		msg =  f'Option {opt} in config file takes a boolean value (true/false)'
+		sys.exit(msg)
+
+	return ast.literal_eval(arg)
+
+
+def parse_simple(line:str):
+	_, arg = _get_simple(line)
+	return arg
+
+
+def parse_dict(line):
 	if '{' in line:
 		value_sets  = re.findall(r'(\{[^\}]*\})+', line)
 		return list(map(lambda x: ast.literal_eval(x), value_sets))
 
 
-def parse_config_nested_list(line):
-	
+def parse_nested_list(line):
 	if '[' in line:
 		size_sets  = re.findall(r'(\[[^\]]*\])+', line)
 		return list(map(lambda x: ast.literal_eval(x), size_sets))
-	
 	else:
-		parse_config_simple_list(line)
+		return parse_simple_list(line)
 
 
-def parse_config_simple_list(line):
-	assert '[' not in line
-	split = line.split(' ')
-	return list(map(lambda x: int(x), split[1:]))
+def parse_simple_list(line):
+	tokens = line.split()
+	opt = tokens[0]
 
+	if '[' in line:
+		msg =  f'Option {opt} in config file takes a simple list (non-nested)'
+		sys.exit(msg)
+
+	return list(map(lambda x: int(x) if x.isnumeric() else x, tokens[1:]))
+
+
+def read_config_file(file:str):
+	with open(file, "r") as f:
+		lines = f.readlines()
+		return lines
 
 
 def parse_config_file(conf) -> dict:
-	f = open(conf, "r")
-	lines = f.readlines()
-	f.close()
-
+	
+	lines = read_config_file(conf) 
 	config = {}
 
 	for l in lines:
@@ -38,49 +77,25 @@ def parse_config_file(conf) -> dict:
 		if l.startswith('//'):
 			continue
 
-		split = l.split(' ')
-		option = split[0]
-		if 'array_size' in option:
-			config['array_size'] = parse_config_list(l)
+		tokens = l.split()
+		assert len(tokens) >= 2
+		config_option = tokens[0]
 
-		if 'null_bytes' in option:
-			config['null_bytes'] = parse_config_list(l)
+		if config_option in Options.names():
+			*_ , option_type = getattr(Options, config_option)
 
-		if 'max_num' in option:
-			assert '[' not in l
-			config['max_num'] = parse_config_list(l)
+			if option_type == OptionTypes.BOOL:
+				arg = parse_boolean(l)
+			elif option_type == OptionTypes.SIMPLE:
+				arg = parse_simple(l)
+			elif option_type == OptionTypes.LIST:
+				arg = parse_simple_list(l)
+			elif option_type == OptionTypes.NESTED:
+				arg = parse_nested_list(l)
+			else:
+				assert option_type == OptionTypes.DICT
+				arg = parse_dict(l)
 
-		if 'summ_name' == option:
-			if len(split) == 2:
-				config['summ_name'] = split[1]
-
-		if 'func_name' in option:
-			if len(split) == 2:
-				config['func_name'] = split[1]
-		
-		if 'compile' == option:
-			if len(split) == 2:
-				config['compile'] = split[1]
-		
-		if 'summ' == option:
-			if len(split) == 2:
-				config['summ'] = split[1]
-
-		if 'func' in option:
-			if len(split) == 2:
-				config['func'] = split[1]				
-
-		if 'lib' in option:
-			assert '[' not in l
-			config['lib'] = parse_config_list(l)
-
-		if 'max_names' in option:
-			config['max_names'] = [n for n in split[1:]]
-
-		if 'default_values' in option:
-			config['default_values'] = parse_config_dict(l)
-
-		if 'concrete_array' in option:
-			config['concrete_array'] = parse_config_dict(l)
+			config[config_option] = arg
 
 	return config

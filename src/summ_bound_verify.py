@@ -4,7 +4,7 @@ import sys
 import traceback
 from argparse import Namespace
 
-from input_options import parse_input_args
+from cli import parse_input_args
 from validation_gen import ValidationGenerator, CCompiler
 
 
@@ -23,19 +23,19 @@ def runValidationGen(args: Namespace):
 	'''
 	concrete_function = args.func
 	target_summary = args.summ
-	summ_name = args.summ_name
-	func_name = args.func_name
+	summname = args.summname
+	funcname = args.funcname
 	outputfile = args.o
 
 	if not concrete_function and not target_summary:
 		sys.exit('ERROR: At least the code for a concrete function or summary MUST be provided')
 
-	if not concrete_function and not func_name:
+	if not concrete_function and not funcname:
 		msg = ("ERROR: No concrete function code or name provided\n"
 				"INFO: In the absence of the code, a name must be specified in order to call the function")
 		sys.exit(msg)
 
-	if not target_summary and not summ_name:
+	if not target_summary and not summname:
 		msg = ("ERROR: No summary code or name provided\n"
 				"INFO: In the absence of the code, a name must be specified in order to call the summary")
 		sys.exit(msg)
@@ -45,8 +45,8 @@ def runValidationGen(args: Namespace):
 										maxnum=args.maxvalue, maxnames=args.maxnames,
 										default=args.defaultvalues, concrete_arrays=args.concretearray,
 									    memory=args.memory,
-										cncrt_name=func_name, summ_name=summ_name,
-										no_api=args.no_api)
+										cncrt_name=funcname, summ_name=summname,
+										no_api=args.noapi)
 	file = valgenerator.gen()
 
 	assert(file == outputfile)
