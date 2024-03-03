@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-
+import re
 import ast
 import sys
 import argparse
@@ -58,13 +57,6 @@ class Options():
 		return [opt[1] for opt in self.__dict__.values()]
 
 Options = Options()
-
-
-import re
-import ast
-import sys
-
-from options import Options, OptionTypes
 
 def _get_simple(line:str):
 	tokens = line.split()
