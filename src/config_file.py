@@ -7,15 +7,22 @@ def parse_config_dict(line):
 		value_sets  = re.findall(r'(\{[^\}]*\})+', line)
 		return list(map(lambda x: ast.literal_eval(x), value_sets))
 
-def parse_config_list(line):
+
+def parse_config_nested_list(line):
 	
 	if '[' in line:
 		size_sets  = re.findall(r'(\[[^\]]*\])+', line)
 		return list(map(lambda x: ast.literal_eval(x), size_sets))
-
+	
 	else:
-		split = line.split(' ')
-		return list(map(lambda x: int(x), split[1:]))
+		parse_config_simple_list(line)
+
+
+def parse_config_simple_list(line):
+	assert '[' not in line
+	split = line.split(' ')
+	return list(map(lambda x: int(x), split[1:]))
+
 
 
 def parse_config_file(conf) -> dict:
@@ -51,9 +58,9 @@ def parse_config_file(conf) -> dict:
 			if len(split) == 2:
 				config['func_name'] = split[1]
 		
-		if 'compile_arch' in option:
+		if 'compile' == option:
 			if len(split) == 2:
-				config['compile_arch'] = split[1]
+				config['compile'] = split[1]
 		
 		if 'summ' == option:
 			if len(split) == 2:
