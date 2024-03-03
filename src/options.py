@@ -26,10 +26,14 @@ class Options():
 		self.memory = ('-', 'memory', OptionTypes.BOOL)
 		self.config = ('-', 'config', OptionTypes.SIMPLE)
 
+		for name, opt in self.__dict__.items():
+			optname = opt[1]
+			assert name == optname, f'option names must match => self.{name} != {optname}'
+
 	def values(self):
 		return list(self.__dict__.values())
 
 	def names(self):
-		return [arg[1] for arg in self.__dict__.values()]
+		return [opt[1] for opt in self.__dict__.values()]
 
 Options = Options()

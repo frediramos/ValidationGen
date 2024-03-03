@@ -79,9 +79,9 @@ def parse_input_args(input=None):
 	complex = [OptionTypes.NESTED, OptionTypes.DICT]
 
 	#Convert complex options string to Python ast
-	for arg in filter(lambda a: a[2] in complex, options):
-		parsed = eval_ast(getattr(args, arg[1]))
-		setattr(args, arg[1], parsed)
+	for opt in filter(lambda a: a[2] in complex, options):
+		parsed = eval_ast(getattr(args, opt[1]))
+		setattr(args, opt[1], parsed)
 
 	# Parse config file and override cmd args
 	config_file = args.config
