@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import traceback
-import inspect
 import logging
 import psutil
 import signal
@@ -9,14 +8,13 @@ import json
 import sys
 import os
 
-from angr import Project, SimState, SimulationManager, SimHeapPTMalloc
+from angr import Project, SimState, SimulationManager, SimProcedure, SimHeapPTMalloc
 from angr import options, BP_AFTER
 
 from .validationAPI import validation as Validation_API
-from .validationAPI import solver as Solver_API
-from .validationAPI import constraints as Constraints_API
-
-from .summaries import General as Summaries, CaseStudies as CaseStudies
+from .validationAPI.constraints import summaries as constraints
+from .validationAPI.solver import summaries as solver
+from .validationAPI.validation import summaries as validation
 
 from .utils import truncate, write2file, get_fnames
 from .macros import SYM_VAR 
@@ -24,7 +22,7 @@ from .macros import SYM_VAR
 
 class angrEngine():
 	
-	def __init__(self, binary:str, timeout:30*60,
+	def __init__(self, binary:str, timeout=30*60, results_dir='.',
 				  save_stats=False, save_paths=False,
 				  stats_dir='.', paths_dir='.',
 				  convert_ascii=False,
@@ -33,6 +31,8 @@ class angrEngine():
 		self.binary = os.path.normpath(binary)
 		self.timeout = timeout
 		
+		self.results_dir = results_dir
+
 		self.save_paths = save_paths
 		self.save_stats = save_stats
 		
@@ -52,28 +52,25 @@ class angrEngine():
 		self.sm: SimulationManager = None
 
 	def _ignore_list(self, ignore):
-		f = open(ignore, 'r')
-		implemented = f.readlines()
-		return [f.strip() for f in implemented]
+		if not ignore:
+			return []
+		with open(ignore, 'r') as f:
+			implemented = f.readlines()
+			return [f.strip() for f in implemented]
 
 	
 	#Hook API symbols
 	def _set_hooks(self, p:Project):
 
-		summs = [Solver_API, Constraints_API, Summaries, CaseStudies]
-		
-		for s in summs:
-			for name, obj in inspect.getmembers(s, inspect.isclass):
-					p.hook_symbol(name, obj)
+		summaries = [*constraints, *solver, *validation]
+
+		for s in summaries:
+			print(s.__name__)
+			p.hook_symbol(s.__name__, s())
 
 		#Validation
 		p.hook_symbol('halt_all', Validation_API.halt_all(self.sm))
-		p.hook_symbol('mem_addr', Validation_API.mem_addr())
-		p.hook_symbol('save_current_state', Validation_API.save_current_state())
-		p.hook_symbol('get_cnstr', Validation_API.get_cnstr())
-		p.hook_symbol('store_cnstr', Validation_API.store_cnstr())
-		p.hook_symbol('check_implications', Validation_API.check_implications())
-		p.hook_symbol('print_counterexamples', Validation_API.print_counterexamples(self.binary_name, self.stats_dir, self.convert_ascii))
+		p.hook_symbol('print_counterexamples', Validation_API.print_counterexamples(self.binary_name, self.results_dir, self.convert_ascii))
 
 	
 	def _create_entry_state(self, p:Project) -> SimState:
@@ -219,7 +216,7 @@ class angrEngine():
 		
 		p = Project(self.binary, exclude_sim_procedures_list=self.ignore_list)
 
-		state = self._create_entry_state()
+		state = self._create_entry_state(p)
 		sm = p.factory.simulation_manager(state)
 		self.sm = sm
 
@@ -229,7 +226,7 @@ class angrEngine():
 
 		#Run Symbolic Execution
 		start = time.time()
-		self._step(sm)
+		self._step(sm, start)
 		end = time.time()
 
 		#Store execution time
@@ -240,3 +237,5 @@ class angrEngine():
 
 		if self.save_paths:
 			self._save_paths()
+
+		return

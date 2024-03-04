@@ -21,6 +21,8 @@ class Options():
 
 
 	def __init__(self) -> None:
+		
+		# Validation Gen
 		self.o = ('-', 'o', OptionTypes.SIMPLE)
 		self.func = ('-', 'func', OptionTypes.SIMPLE)
 		self.summ = ('-', 'summ', OptionTypes.SIMPLE)
@@ -37,6 +39,14 @@ class Options():
 		self.compile = ('--', 'compile', OptionTypes.SIMPLE)
 		self.memory = ('-', 'memory', OptionTypes.BOOL)
 		self.config = ('-', 'config', OptionTypes.SIMPLE)
+
+		# Validation Run
+		self.run = ('-', 'run', OptionTypes.BOOL)
+		self.binary = ('--', 'binary', OptionTypes.SIMPLE)
+		self.timeout = ('-', 'timeout', OptionTypes.SIMPLE)
+		self.results = ('--', 'results', OptionTypes.SIMPLE)
+		self.ascii = ('-', 'ascii', OptionTypes.BOOL)
+		self.debug = ('-', 'debug', OptionTypes.BOOL)
 
 		self.validate_options()
 

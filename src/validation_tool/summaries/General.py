@@ -1,6 +1,5 @@
 from angr import SimProcedure, SIM_PROCEDURES
 
-
 class _debug(SimProcedure):
 	def run(self, ptr):
 		print('*Debug', end=' ')
@@ -18,14 +17,11 @@ class _debug(SimProcedure):
 		print()
 		return
 
-
 class _puts(SimProcedure):
 	def run(self, string):
 		puts = SIM_PROCEDURES['libc']['puts']
 		self.inline_call(puts, string)
 		return
-
-
 
 class _malloc(SimProcedure):
 	def run(self, sim_size):
@@ -42,3 +38,12 @@ class _calloc(SimProcedure):
 class _realloc(SimProcedure):
 	def run(self, ptr, size):
 		return self.state.heap.realloc(ptr, size)
+	
+summaries = [
+	_debug,
+	_puts,
+	_malloc,
+	_free,
+	_calloc,
+	_realloc
+]

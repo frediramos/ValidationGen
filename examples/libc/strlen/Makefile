@@ -3,13 +3,13 @@ EXEC = $(shell basename $(CURDIR))_validation.test
 SUMM = $(shell basename $(CURDIR)).c
 CONFIG = config.txt
 
-.PHONY: all clean
+.PHONY: all run clean
 
 all:
 	summbv -config $(CONFIG) -o $(TEST) --lib $(SUMM)
 
-# run:
-# 	summbv -config $(CONFIG) -o $(TEST) --lib $(SUMM)
-
+run:
+	summbv -config $(CONFIG) -o $(TEST) --lib $(SUMM) -run
+	
 clean:
 	$(RM) *.o *.test $(TEST) *.json

@@ -7,8 +7,7 @@ from argparse import Namespace
 from cli import parse_input_args
 from validation_gen import ValidationGenerator, CCompiler
 
-
-def compileValidationTest(arch, file:str, libs):
+def compile_validation_test(arch, file:str, libs):
 	bin_name = file[:-2] + '.test' #Remove '.c' + .test
 	comp = CCompiler(arch, file, bin_name, libs)
 	comp.compile()
@@ -16,7 +15,7 @@ def compileValidationTest(arch, file:str, libs):
 
 
 #Takes command line / config file arguments
-def runValidationGen(args: Namespace):
+def run_validation_gen(args: Namespace):
 	'''
 	Take command line args and run the test generation
 	@args: \'argparse\' Namespace object
@@ -53,14 +52,40 @@ def runValidationGen(args: Namespace):
 	return file
 
 
+def run_angr(binary:str, args: Namespace):
+
+	from validation_tool import angrEngine
+
+	engine = angrEngine(binary,
+					    timeout=args.timeout,
+					    results_dir=args.results,
+					    convert_ascii=args.ascii,
+					    debug=args.debug)
+	engine.run()
+
+
 def main():
 	try:
+		# Parse all input (cli and config file)
 		args = parse_input_args()
-		test = runValidationGen(args)
+
+		# Run a given binary a exit
+		if args.run and args.binary:
+			run_angr(args.binary, args)
+			return 0
+	
+		# Gen validation test
+		test = run_validation_gen(args)
+	
+		# Compile
 		if args.compile:
 			arch = args.compile
 			libs = args.lib
-			compileValidationTest(arch, test, libs)
+			binary = compile_validation_test(arch, test, libs)
+
+			# Run if specified
+			if args.run:
+				run_angr(binary, args)
 
 	except Exception as e:
 		print(traceback.format_exc())

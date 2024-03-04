@@ -21,3 +21,9 @@ class hashmap_hash(SimProcedure):
         HASH_COUNTER += 1 
         # print('hashmap_hash:',hash_value)
         self.ret(hash_value)
+
+
+summaries = [
+    Assert,
+    hashmap_hash
+]

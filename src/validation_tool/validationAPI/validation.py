@@ -380,7 +380,6 @@ class print_counterexamples(SimProcedure):
 		
 		super().__init__()
 
-	ascii=False
 	def reset(self):
 		
 		'''HACK: clear memory pairs, sym vars, and input_vars
@@ -479,3 +478,17 @@ class print_counterexamples(SimProcedure):
 
 		self.reset()
 		self.ret()
+
+
+summaries = [
+	save_current_state,
+	get_cnstr,
+	store_cnstr,
+	mem_addr,
+	check_implications,
+	
+	# These primitives require input arguments
+	# (Must be instantiated manually in the engine)
+	# halt_all,
+	# print_counterexamples,
+]
