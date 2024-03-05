@@ -39,9 +39,9 @@ out[0-9_]*.c
 output[0-9_]*.c
 
 #Validation tests
-# Validation files
 /**/*.test
 /**/*_validation.c
+/**/*_validation.test_result.json
 
 # Ast
 ast.txt
@@ -49,9 +49,3 @@ ast.txt
 #Python
 __pycache__/
 *.pyc
-
-
-#AVD
-*.bap
-outputs
-*.json
