@@ -1,4 +1,4 @@
-summ memcpy.c
 func concrete.c
-maxnum 5
+summ memcpy.c
+maxvalue 5
 compile x86
