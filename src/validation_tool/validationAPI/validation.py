@@ -467,7 +467,7 @@ class print_counterexamples(SimProcedure):
 				log += f'Missing path example: \n{missing}\n\n'
 				log += f'Wrong path example: \n{wrong}\n\n'
 		
-		print(log)
+		print(log.rstrip())
 		
 		# Create outputs folder if it does not exist yet
 		if not os.path.exists(self.results_dir):
