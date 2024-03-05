@@ -473,7 +473,7 @@ class print_counterexamples(SimProcedure):
 		if not os.path.exists(self.results_dir):
 			os.makedirs(self.results_dir)
 		
-		json_log_path = f'{self.results_dir}/{self.binary_name}_validation.json'
+		json_log_path = f'{self.results_dir}/{self.binary_name}_result.json'
 		self.log_json(result, models, json_log_path)
 
 		self.reset()
