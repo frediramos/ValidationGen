@@ -1,13 +1,9 @@
-import traceback
-
 from pycparser import c_generator
 from pycparser.c_ast import *
 
 from .c_generator import CGenerator
 from .utils import * 
-from .api_gen import API_Gen
-from .api_gen import api
-from .function_parser import FunctionException
+from .api_gen import api, API_Gen
 from .function_parser import FunctionParser
 from .test_gen import TestGen
 from .test_gen.arg_gen.visitors.structs import StructVisitor
@@ -54,13 +50,15 @@ class ValidationGenerator(CGenerator):
 
 		if not self.no_api:
 			headers += api.type_defs
-			headers += api.validation_api.values()
+			headers += sorted(api.validation_api.values())
 			headers.append('\n')
 
 			#Visitor to get all function calls
 			call_vis = FCallsVisitor()
 			call_vis.visit(summ_def)
 			calls = call_vis.fcalls()
+			
+			# Summary code is not provided
 			if not calls:
 				calls = api.all_api.keys()
 
@@ -69,7 +67,7 @@ class ValidationGenerator(CGenerator):
 			calls = filter(lambda x: x in api.all_api.keys(), calls)
 			calls = filter(lambda x: x not in api.validation_api, calls)
 
-			headers += [api.all_api[c] for c in calls]
+			headers += [api.all_api[c] for c in sorted(calls)]
 			headers.append('\n')
 			
 		#Macros
@@ -240,7 +238,7 @@ class ValidationGenerator(CGenerator):
 			generator = c_generator.CGenerator()
 			generated_string = generator.visit(gen_ast)
 
-			self.write_to_file(generated_string, header)
+			self.write_to_file(generated_string.rstrip(), header)
 			self.remove_files(self.tmp_concrete, self.tmp_summary)
 			return self.outputfile
 
