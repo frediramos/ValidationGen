@@ -58,12 +58,12 @@ class CSummary(SimProcedure):
 	def maximize(self, var):
 		constraints = tuple(self.state.solver.constraints)
 		max_val = self.state.solver.max(var, extra_constraints=(constraints))
-		self.ret(max_val)
+		return max_val
 
 	def minimize(self, var):
 		constraints = tuple(self.state.solver.constraints)
-		max_val = self.state.solver.min(var, extra_constraints=(constraints))
-		self.ret(max_val)
+		min_val = self.state.solver.min(var, extra_constraints=(constraints))
+		return min_val
 
 	def assume(self, cnstr):
 		if not self.state.solver.satisfiable(extra_constraints=(cnstr,)):
