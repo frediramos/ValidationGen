@@ -11,39 +11,39 @@ typedef unsigned int size_t;
 typedef unsigned int cnstr_t;
 typedef unsigned int result_t;
 
-state_t save_current_state() {return 0;}
-cnstr_t get_cnstr(symbolic var, size_t size) {return 0;}
-void store_cnstr(char* name, cnstr_t constraint) {return;}
-void halt_all(state_t state) {return;}
-result_t check_implications(char* constraint1, char* constraint2) {return 0;}
-void print_counterexamples(result_t result) {return;}
-symbolic sym_var_named(char* name, size_t size) {return 0;}
-symbolic sym_var_array(char* name, size_t index, size_t size) {return 0;}
-void mem_addr(char* name, void* addr, size_t length) {return;}
 cnstr_t _ULE_(symbolic var1, symbolic var2) {return 0;}
+cnstr_t get_cnstr(symbolic var, size_t size) {return 0;}
+result_t check_implications(char* constraint1, char* constraint2) {return 0;}
+state_t save_current_state() {return 0;}
+symbolic sym_var_array(char* name, size_t index, size_t size) {return 0;}
+symbolic sym_var_named(char* name, size_t size) {return 0;}
 void assume(cnstr_t cnstr) {return;}
+void halt_all(state_t state) {return;}
+void mem_addr(char* name, void* addr, size_t length) {return;}
+void print_counterexamples(result_t result) {return;}
+void store_cnstr(char* name, cnstr_t constraint) {return;}
 
-long maximize(symbolic sym_var){return 0;}
-symbolic sym_var(size_t size) {return 0;}
-int is_symbolic(symbolic sym_var) {return 0;} 
-int is_certain(cnstr_t cnstr){return 0;}
-void _assert(int expr){return;}
-void push_pc(){return;}
-void pop_pc(){return;}
-cnstr_t _EQ_(symbolic var1, symbolic var2) {return 0;}
-cnstr_t _NEQ_(symbolic var1, symbolic var2) {return 0;}
-cnstr_t _LT_(symbolic var1, symbolic var2) {return 0;}
-cnstr_t _LE_(symbolic var1, symbolic var2) {return 0;}
-cnstr_t _ULT_(symbolic var1, symbolic var2) {return 0;}
-cnstr_t _GT_(symbolic var1, symbolic var2) {return 0;}
-cnstr_t _GE_(symbolic var1, symbolic var2) {return 0;}
-cnstr_t _UGT_(symbolic var1, symbolic var2) {return 0;}
-cnstr_t _UGE_(symbolic var1, symbolic var2) {return 0;}
-cnstr_t _NOT_(cnstr_t cnstr) {return 0;}
-cnstr_t _OR_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}
 cnstr_t _AND_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}
+cnstr_t _EQ_(symbolic var1, symbolic var2) {return 0;}
+cnstr_t _GE_(symbolic var1, symbolic var2) {return 0;}
+cnstr_t _GT_(symbolic var1, symbolic var2) {return 0;}
 cnstr_t _ITE_(cnstr_t cnstr1, cnstr_t cnstr2, cnstr_t cnstr3) {return 0;}
 cnstr_t _ITE_VAR_(cnstr_t cnstr1, symbolic var1, symbolic var2) {return 0;}
+cnstr_t _LE_(symbolic var1, symbolic var2) {return 0;}
+cnstr_t _LT_(symbolic var1, symbolic var2) {return 0;}
+cnstr_t _NEQ_(symbolic var1, symbolic var2) {return 0;}
+cnstr_t _NOT_(cnstr_t cnstr) {return 0;}
+cnstr_t _OR_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}
+cnstr_t _UGE_(symbolic var1, symbolic var2) {return 0;}
+cnstr_t _UGT_(symbolic var1, symbolic var2) {return 0;}
+cnstr_t _ULT_(symbolic var1, symbolic var2) {return 0;}
+void _assert(int expr){return;}
+int is_certain(cnstr_t cnstr){return 0;}
+int is_symbolic(symbolic sym_var) {return 0;} 
+long maximize(symbolic sym_var){return 0;}
+void pop_pc(){return;}
+void push_pc(){return;}
+symbolic sym_var(size_t size) {return 0;}
 
 #define POINTER_SIZE 5
 #define FUEL 5
@@ -86,4 +86,3 @@ int main()
 {
   test_1();
 }
-
