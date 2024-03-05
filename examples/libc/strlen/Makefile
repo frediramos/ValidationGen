@@ -42,4 +42,4 @@ test-run:
 	fi
 
 clean:
-	$(RM) *.o *.test $(TEST) *.json
+	$(RM) *.o *.test $(TEST) $(EXEC) $(RESULT)
