@@ -45,6 +45,7 @@ class Options():
 		self.binary = ('--', 'binary', OptionTypes.SIMPLE)
 		self.timeout = ('-', 'timeout', OptionTypes.SIMPLE)
 		self.results = ('--', 'results', OptionTypes.SIMPLE)
+		self.stats = ('--', 'stats', OptionTypes.SIMPLE)
 		self.ascii = ('-', 'ascii', OptionTypes.BOOL)
 		self.debug = ('-', 'debug', OptionTypes.BOOL)
 

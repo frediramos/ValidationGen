@@ -59,6 +59,7 @@ def run_angr(binary:str, args: Namespace):
 	engine = angrEngine(binary,
 					    timeout=args.timeout,
 					    results_dir=args.results,
+						stats_dir=args.stats,
 					    convert_ascii=args.ascii,
 					    debug=args.debug)
 	engine.run()

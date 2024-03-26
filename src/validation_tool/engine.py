@@ -23,8 +23,7 @@ from .macros import SYM_VAR
 class angrEngine():
 	
 	def __init__(self, binary:str, timeout=30*60, results_dir='.',
-				  save_stats=False, save_paths=False,
-				  stats_dir='.', paths_dir='.',
+				  stats_dir=None, paths_dir=None,
 				  convert_ascii=False,
 				  ignore=None, debug=False) -> None:
 		
@@ -32,9 +31,6 @@ class angrEngine():
 		self.timeout = timeout
 		
 		self.results_dir = results_dir
-
-		self.save_paths = save_paths
-		self.save_stats = save_stats
 		
 		self.stats_dir = stats_dir
 		self.paths_dir = paths_dir
@@ -49,8 +45,6 @@ class angrEngine():
 		self.fnames = get_fnames(self.binary)
 		self.fcalled = {}
 
-		self.sm: SimulationManager = None
-
 	def _ignore_list(self, ignore):
 		if not ignore:
 			return []
@@ -60,7 +54,7 @@ class angrEngine():
 
 	
 	#Hook API symbols
-	def _set_hooks(self, p:Project):
+	def _set_hooks(self, p:Project, sm:SimulationManager):
 
 		summaries = [*constraints, *solver, *validation]
 
@@ -68,7 +62,7 @@ class angrEngine():
 			p.hook_symbol(s.__name__, s())
 
 		#Validation
-		p.hook_symbol('halt_all', Validation_API.halt_all(self.sm))
+		p.hook_symbol('halt_all', Validation_API.halt_all(sm))
 		p.hook_symbol('print_counterexamples', Validation_API.print_counterexamples(self.binary_name, self.results_dir, self.convert_ascii))
 
 	
@@ -88,16 +82,16 @@ class angrEngine():
 		
 		state.libc.simple_strtok = False
 		
-		if self.save_stats:
+		if self.stats_dir:
 			state.inspect.b('call', when=BP_AFTER, action=self._count_fcall)
 
 		return state
 
-	def _register_timeout(self):
+	def _register_timeout(self, sm:SimulationManager):
 
 		def handler(signum, frame):
-			if self.save_stats:
-				self._save_stats(timeout=True)
+			if self.stats_dir:
+				self._save_stats(sm, timeout=True)
 			print(f'[!] Timeout Detected {self.timeout} seconds')
 			sys.exit(0)
 
@@ -145,9 +139,10 @@ class angrEngine():
 				write2file(file, v)
 		return
 
-	def _save_stats(self, time_spent=None, timeout=None,
-				  	start=None,
-				    exception=None):
+	def _save_stats(self, sm:SimulationManager,
+					time_spent=None, timeout=None,
+					start=None,
+					exception=None):
 		
 		out_stats = {}
 
@@ -168,7 +163,7 @@ class angrEngine():
 			out_stats['Time'] = time_spent
 
 		# out_stats['T_Solver'] = round(claripy.SOLVER_TIME, 4)
-		out_stats['N_Paths'] = len(self._get_states())
+		out_stats['N_Paths'] = len(self._get_states(sm))
 		
 		#Convert function call addrs to symbols
 		converted = {}
@@ -198,8 +193,8 @@ class angrEngine():
 		
 		except Exception as e:
 			
-			if self.save_stats:
-				self._save_stats(exception=e, start=start)
+			if self.stats_dir:
+				self._save_stats(sm, exception=e, start=start)
 			
 			print(traceback.format_exc())
 			sys.exit(1)
@@ -211,17 +206,14 @@ class angrEngine():
 			logging.getLogger('angr').setLevel('INFO')	
 
 		sys.setrecursionlimit(20000)
-		self._register_timeout()
 		
 		p = Project(self.binary, exclude_sim_procedures_list=self.ignore_list)
 
 		state = self._create_entry_state(p)
 		sm = p.factory.simulation_manager(state)
-		self.sm = sm
+		self._register_timeout(sm)
 
-		# Set hooks after creating simulation manager
-		# self.sm is passed to one of the hooks
-		self._set_hooks(p)
+		self._set_hooks(p, sm)
 
 		#Run Symbolic Execution
 		start = time.time()
@@ -231,10 +223,10 @@ class angrEngine():
 		#Store execution time
 		tspent = round(end-start, 4)
 
-		if self.save_stats:
-			self._save_stats(time_spent=tspent)
+		if self.stats_dir:
+			self._save_stats(sm, time_spent=tspent)
 
-		if self.save_paths:
-			self._save_paths()
+		if self.paths_dir:
+			self._save_paths(sm)
 
 		return

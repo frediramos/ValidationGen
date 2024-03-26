@@ -68,17 +68,20 @@ def parse_cmdline_args(input=None):
 	validation.add_argument(flag(Options.binary), metavar='bin', type=str, default=None,
 						help='Path to a previously generated binary')
 
+	validation.add_argument(flag(Options.timeout), metavar='sec', type=int,
+						help='Execution Timeout in seconds (default: 1800sec, 30min)', default=30*60)
+
+	validation.add_argument(flag(Options.results), metavar='path', type=str,
+						help='Directory where JSON results should be saved (default: ./)', default='.')   
+														
+	validation.add_argument(flag(Options.stats), metavar='path', type=str,
+						help='Directory to save execution statistics', default=None)   
+										
 	validation.add_argument(flag(Options.ascii), action='store_true',
 						help='Convert ASCII values to characters in counterexamples')
 
 	validation.add_argument(flag(Options.debug), action='store_true',
 						help='Enable debug logging to console')
-
-	validation.add_argument(flag(Options.results), metavar='path', type=str,
-						help='Directory where JSON results should be saved (default: ./)', default='.')   
-
-	validation.add_argument(flag(Options.timeout), metavar='sec', type=int,
-						help='Execution Timeout in seconds (default: 1800sec, 30min)', default=30*60)    													
 	
 	args = parser.parse_args(input)
 
