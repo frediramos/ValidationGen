@@ -16,7 +16,7 @@ from .validationAPI.constraints import summaries as constraints
 from .validationAPI.solver import summaries as solver
 from .validationAPI.validation import summaries as validation
 
-from .utils import truncate, write2file, get_fnames
+from .utils import truncate, write2file, get_fnames, get_states
 from .macros import SYM_VAR 
 
 
@@ -63,7 +63,7 @@ class angrEngine():
 
 		#Validation
 		p.hook_symbol('halt_all', Validation_API.halt_all(sm))
-		p.hook_symbol('print_counterexamples', Validation_API.print_counterexamples(self.binary_name, self.results_dir, self.convert_ascii))
+		p.hook_symbol('print_counterexamples', Validation_API.print_counterexamples(sm, self.binary_name, self.results_dir, self.convert_ascii))
 
 	
 	def _create_entry_state(self, p:Project) -> SimState:
@@ -99,11 +99,6 @@ class angrEngine():
 		signal.alarm(self.timeout)
 
 
-	def _get_states(self, sm:SimulationManager):
-		states = sm.deadended + sm.active
-		return states
-
-
 	def _count_fcall(self, state):
 		addr = str(state.inspect.function_address) 	#<BV32 0x80483a3>
 		addr = addr.split()[1] 			 		 	#0x80483a3>
@@ -127,7 +122,7 @@ class angrEngine():
 		if not os.path.exists(self.paths_dir):
 			os.makedirs(self.paths_dir)
 		
-		for idx, state in enumerate(self._get_states(sm)):
+		for idx, state in enumerate(get_states(sm)):
 			file = f'{self.paths_dir}/{self.binary_name}_{idx}.path'
 			truncate(file)
 			
@@ -162,8 +157,13 @@ class angrEngine():
 			assert time_spent is not None
 			out_stats['Time'] = time_spent
 
-		# out_stats['T_Solver'] = round(claripy.SOLVER_TIME, 4)
-		out_stats['N_Paths'] = len(self._get_states(sm))
+		if Validation_API.SUMM_PATHS:
+			out_stats['N_Paths'] = {
+				"summary": Validation_API.SUMM_PATHS, 
+				"concrete": Validation_API.CNCR_PATHS, 
+			}
+		else:
+			out_stats['N_Paths'] = len(get_states(sm))
 		
 		#Convert function call addrs to symbols
 		converted = {}

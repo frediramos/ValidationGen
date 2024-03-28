@@ -9,6 +9,10 @@ def truncate(file):
 	with open(file,'w'):
 		return
 
+def get_states(sm):
+	states = sm.deadended + sm.active
+	return states
+
 def get_fnames(binary):
 
 	def clean_addr(addr):

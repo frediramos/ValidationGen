@@ -7,6 +7,8 @@ from z3 import simplify, Or, Not, Solver, sat, Exists
 
 from collections import OrderedDict
 
+from ..utils import get_states
+
 from .solver import SYM_VARS
 from .utils import *
 
@@ -57,6 +59,10 @@ RESULTS_COUNTER = 0
 TEST_COUNT = 0
 JSON_LOG = {}
 
+#Path stats
+#------------------------------------------------------
+SUMM_PATHS = 0
+CNCR_PATHS = 0
 
 
 '''Validation Primitives'''
@@ -236,6 +242,7 @@ class halt_all(SimProcedure):
 	def run(self, state_id):
 		global REACHED_HALT
 		global REACHED_NULL
+		global CNCR_PATHS
 
 		state_id = self.state.solver.eval(state_id)
 		sc = Sign_Converter()
@@ -259,6 +266,9 @@ class halt_all(SimProcedure):
 				self.activate_state(state, ret_addr)				
 			
 			self.exit(0)
+		
+		CNCR_PATHS = len(get_states(self.sm))
+
 
 
 
@@ -373,7 +383,12 @@ class check_implications(SimProcedure):
 
 class print_counterexamples(SimProcedure):
 
-	def __init__(self, binary_name:str, results_dir:str, convert_ascii=False):
+	def __init__(self, sm,
+			 binary_name:str,
+			   results_dir:str,
+				 convert_ascii=False):
+		
+		self.sm = sm
 		self.binary_name = binary_name
 		self.results_dir = results_dir
 		self.convert_ascii = convert_ascii
@@ -478,6 +493,9 @@ class print_counterexamples(SimProcedure):
 
 		self.reset()
 		self.ret()
+
+		global SUMM_PATHS
+		SUMM_PATHS = len(get_states(self.sm))
 
 
 summaries = [
