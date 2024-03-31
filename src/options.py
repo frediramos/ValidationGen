@@ -6,55 +6,51 @@ class OptionTypes:
 	NESTED = 'nested'
 	DICT   = 'dict'
 
-class Options():
+
+class MetaOptions(type):
+	
+	def __values(self):
+		return {k: v for k, v in vars(self).items() if '__' not in k}.values()
+
+	def __keys(self):
+		return [opt[1] for opt in self.__values()]
+
+	def __iter__(self):
+		for v in self.__values():
+			yield v
+
+	def __contains__(self, v):
+		return v in self.__keys()
+
+	def __len__(self):
+		return len(self.__values())
 
 
-	# Validate option defs just in case
-	# 1 - check that class attributes and option names match
-	# 2 - check that all used types are define in OptionTypes 
-	def validate_options(self):
-		for name, opt in self.__dict__.items():
-			optname = opt[1]
-			opttype = opt[2]
-			assert opttype in vars(OptionTypes).values()
-			assert name == optname, f'option names must match => self.{name} != {optname}'
+class Options(metaclass=MetaOptions):
 
+	# Validation Gen
+	o = ('-', 'o', OptionTypes.SIMPLE)
+	func = ('-', 'func', OptionTypes.SIMPLE)
+	summ = ('-', 'summ', OptionTypes.SIMPLE)
+	summname = ('--', 'summname', OptionTypes.SIMPLE)
+	funcname = ('--', 'funcname', OptionTypes.SIMPLE)
+	arraysize = ('--', 'arraysize', OptionTypes.NESTED)
+	nullbytes = ('--', 'nullbytes', OptionTypes.NESTED)
+	defaultvalues = ('--', 'defaultvalues', OptionTypes.NESTED)
+	maxvalue = ('--', 'maxvalue', OptionTypes.LIST)
+	maxnames = ('--', 'maxnames', OptionTypes.LIST)
+	concretearray = ('--', 'concretearray', OptionTypes.DICT)
+	lib = ('--', 'lib', OptionTypes.LIST)
+	noapi = ('-', 'noapi', OptionTypes.BOOL)
+	compile = ('--', 'compile', OptionTypes.SIMPLE)
+	memory = ('-', 'memory', OptionTypes.BOOL)
+	config = ('-', 'config', OptionTypes.SIMPLE)
 
-	def __init__(self) -> None:
-		
-		# Validation Gen
-		self.o = ('-', 'o', OptionTypes.SIMPLE)
-		self.func = ('-', 'func', OptionTypes.SIMPLE)
-		self.summ = ('-', 'summ', OptionTypes.SIMPLE)
-		self.summname = ('--', 'summname', OptionTypes.SIMPLE)
-		self.funcname = ('--', 'funcname', OptionTypes.SIMPLE)
-		self.arraysize = ('--', 'arraysize', OptionTypes.NESTED)
-		self.nullbytes = ('--', 'nullbytes', OptionTypes.NESTED)
-		self.defaultvalues = ('--', 'defaultvalues', OptionTypes.NESTED)
-		self.maxvalue = ('--', 'maxvalue', OptionTypes.LIST)
-		self.maxnames = ('--', 'maxnames', OptionTypes.LIST)
-		self.concretearray = ('--', 'concretearray', OptionTypes.DICT)
-		self.lib = ('--', 'lib', OptionTypes.LIST)
-		self.noapi = ('-', 'noapi', OptionTypes.BOOL)
-		self.compile = ('--', 'compile', OptionTypes.SIMPLE)
-		self.memory = ('-', 'memory', OptionTypes.BOOL)
-		self.config = ('-', 'config', OptionTypes.SIMPLE)
-
-		# Validation Run
-		self.run = ('-', 'run', OptionTypes.BOOL)
-		self.binary = ('--', 'binary', OptionTypes.SIMPLE)
-		self.timeout = ('-', 'timeout', OptionTypes.SIMPLE)
-		self.results = ('--', 'results', OptionTypes.SIMPLE)
-		self.stats = ('--', 'stats', OptionTypes.SIMPLE)
-		self.ascii = ('-', 'ascii', OptionTypes.BOOL)
-		self.debug = ('-', 'debug', OptionTypes.BOOL)
-
-		self.validate_options()
-
-	def values(self):
-		return list(self.__dict__.values())
-
-	def names(self):
-		return [opt[1] for opt in self.__dict__.values()]
-
-Options = Options()
+	# Validation Run
+	run = ('-', 'run', OptionTypes.BOOL)
+	binary = ('--', 'binary', OptionTypes.SIMPLE)
+	timeout = ('-', 'timeout', OptionTypes.SIMPLE)
+	results = ('--', 'results', OptionTypes.SIMPLE)
+	stats = ('--', 'stats', OptionTypes.SIMPLE)
+	ascii = ('-', 'ascii', OptionTypes.BOOL)
+	debug = ('-', 'debug', OptionTypes.BOOL)

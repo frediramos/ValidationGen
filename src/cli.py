@@ -85,7 +85,7 @@ def parse_cmdline_args(input=None):
 	
 	args = parser.parse_args(input)
 
-	assert len(vars(args)) == len(vars(Options))
+	assert len(vars(args)) == len(Options)
 	return args
 
 
@@ -99,11 +99,10 @@ def parse_input_args(input=None):
 
 	# Parse command line args
 	args = parse_cmdline_args(input)
-	options = Options.values()
 	complex = [OptionTypes.NESTED, OptionTypes.DICT]
 
 	#Convert complex options string to Python ast
-	for opt in filter(lambda a: a[2] in complex, options):
+	for opt in filter(lambda a: a[2] in complex, Options):
 		parsed = eval_ast(getattr(args, opt[1]))
 		setattr(args, opt[1], parsed)
 

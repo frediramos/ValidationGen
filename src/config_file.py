@@ -81,7 +81,7 @@ def parse_config_file(conf) -> dict:
 		assert len(tokens) >= 2
 		config_option = tokens[0]
 
-		if config_option in Options.names():
+		if config_option in Options:
 			*_ , option_type = getattr(Options, config_option)
 
 			if option_type == OptionTypes.BOOL:
