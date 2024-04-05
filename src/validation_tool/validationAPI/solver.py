@@ -74,6 +74,9 @@ class CSummary(SimProcedure):
 		neg_cnstr = self.state.solver.Not(cnstr)
 		return not self.state.solver.satisfiable(extra_constraints=(neg_cnstr,))
 
+	def is_sat(self, cnstr):
+		return not self.state.solver.satisfiable(extra_constraints=(cnstr,))
+
 	def _assert(self, cnstr):
 		if not self.state.solver.satisfiable(extra_constraints=(cnstr,)):
 			raise UnsatException(f'Unsat cnstr in \'_assert\': {cnstr}')
@@ -147,6 +150,16 @@ class is_certain(CSummary):
 		cnstr_id = self.state.solver.eval(cnstr)
 		cnstr = CNSTR_MAP[cnstr_id]
 		if self.is_certain(cnstr):
+			ret = 1
+		else:
+			ret = 0 
+		self.ret(ret)
+
+class is_sat(CSummary):
+	def run(self, cnstr):
+		cnstr_id = self.state.solver.eval(cnstr)
+		cnstr = CNSTR_MAP[cnstr_id]
+		if self.is_sat(cnstr):
 			ret = 1
 		else:
 			ret = 0 
@@ -232,6 +245,7 @@ summaries = [
 	constraints,
 	assume,
 	is_certain,
+	is_sat,
 	_assert,
 	push_pc,
 	pop_pc
