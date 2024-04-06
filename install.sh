@@ -150,7 +150,6 @@ install () {
 		else
 				echo "angr was not installed"
 				echo "But SummBoundVerify can still be used for symbolic test generation"
-			fi
 		fi
 	
 	else
