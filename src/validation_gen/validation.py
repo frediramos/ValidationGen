@@ -46,10 +46,9 @@ class ValidationGenerator(CGenerator):
 		_ , summ_def = defs
 
 		#Add core api functions
-		headers = []
+		headers = [*api.type_defs]
 
 		if not self.no_api:
-			headers += api.type_defs
 			headers += sorted(api.validation_api.values())
 			headers.append('\n')
 
