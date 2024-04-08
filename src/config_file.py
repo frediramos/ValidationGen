@@ -97,5 +97,8 @@ def parse_config_file(conf) -> dict:
 				arg = parse_dict(l)
 
 			config[config_option] = arg
+		
+		else:
+			print(f'[!] Unknown option \'{config_option}\' in {conf}')
 
 	return config
