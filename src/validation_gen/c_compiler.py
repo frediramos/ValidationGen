@@ -10,7 +10,7 @@ class CCompiler():
         self.gcc_args = ['-Wall', '-O0',
                          '-Wno-implicit-function-declaration',
                          '-Wno-int-conversion',
-                         '-no-pie', '-Wno-unused-variable',
+                         '-Wno-unused-variable',
                          '-fno-builtin']
 
         if self.arch == 'x86':
