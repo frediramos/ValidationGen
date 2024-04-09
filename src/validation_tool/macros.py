@@ -1,0 +1,1 @@
+SYM_VAR = 'symvar'
