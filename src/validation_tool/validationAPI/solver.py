@@ -191,7 +191,7 @@ class sym_var_named(SimProcedure):
 	def run(self, name_addr, length):
 		
 		length = self.state.solver.eval(length)
-		assert length % 8 == 0, "Size is in bits but must be divisible by 8!"
+		assert length % 8 == 0, "[!] Size in bits must be divisible by 8"
 
 		name = get_name(self.state, name_addr)
 		assert(name not in SYM_VARS.keys())	
@@ -212,7 +212,7 @@ class sym_var_array(SimProcedure):
 	def run(self, name_addr, index, length):
 		
 		length = self.state.solver.eval(length)
-		assert length % 8 == 0, "Size is in bits but must be divisible by 8!"
+		assert length % 8 == 0, "[!] Size in bits must be divisible by 8"
 
 		index = self.state.solver.eval(index)
 
