@@ -153,16 +153,19 @@ class get_cnstr(SimProcedure):
 		c = self.state.solver.constraints
 	
 		#Ignore Ret for void functions
-		if self.state.solver.eval(length) !=0:
+		if self.state.solver.eval(length) != 0:
 
 			var = self.state.memory.load(var_addr, length/8, endness='Iend_LE')
-			#Symbolic or Single Valued 
-			if not self.state.solver.symbolic(var):
-				var = self.value_fromBV(var)
+			
+			# #Symbolic or Single Valued 
+			# if not self.state.solver.symbolic(var):
+			# 	var = self.value_fromBV(var)
+			# 	var = self.state.solver.BVV(var, self.state.arch.bits)
 
 			ret = self.state.solver.BVS("Ret", self.state.arch.bits, explicit_name=True)
 			RET = ret
-	
+
+			var =  var.sign_extend(self.state.arch.bits - var.size())
 			c.append(ret == var)
 		
 		c.append(mem_restrs)

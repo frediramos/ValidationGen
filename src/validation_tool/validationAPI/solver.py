@@ -30,7 +30,7 @@ class CSummary(SimProcedure):
 			self.stop_exec(msg)
 
 		sym_var = self.state.solver.BVS(SYM_VAR, length)		
-		sym_var = sym_var.sign_extend(self.state.arch.bits - length)
+		sym_var = sym_var.zero_extend(self.state.arch.bits - length)
 		return sym_var
 
 	def sym_var_float(self, length):
@@ -49,7 +49,7 @@ class CSummary(SimProcedure):
 		self.all_variables = list(self.all_variables)
 		self.all_variables.append(sym_var_fp)
 
-		sym_var_fp = sym_var_fp.sign_extend(self.state.arch.bits - length)
+		sym_var_fp = sym_var_fp.zero_extend(self.state.arch.bits - length)
 		return sym_var_fp
 
 	def is_symbolic(self, var):
@@ -199,7 +199,7 @@ class sym_var_named(SimProcedure):
 		sym_var = self.state.solver.BVS(name, length, explicit_name=True)
 		SYM_VARS[name] = [sym_var]
 			
-		sym_var = sym_var.sign_extend(self.state.arch.bits - length)
+		sym_var = sym_var.zero_extend(self.state.arch.bits - length)
 		
 		try:
 			self.ret(sym_var)
@@ -226,7 +226,7 @@ class sym_var_array(SimProcedure):
 		
 		SYM_VARS[name].append(sym_var)  
 
-		sym_var = sym_var.sign_extend(self.state.arch.bits - length)
+		sym_var = sym_var.zero_extend(self.state.arch.bits - length)
 
 		try:
 			self.ret(sym_var)
