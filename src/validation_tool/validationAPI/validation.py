@@ -247,9 +247,7 @@ class halt_all(SimProcedure):
 		global CNCR_PATHS
 
 		state_id = self.state.solver.eval(state_id)
-		sc = Sign_Converter()
-
-		state_id = sc.to_signed_int(state_id)
+		state_id = to_signed_int(state_id)
 
 		#Receives NULL
 		if state_id == 0:

@@ -28,28 +28,24 @@ def get_name(state, addr):
 
 
 #Signedness-----------------------------------------
-class Sign_Converter():
-	def __init__(self):
-		pass
+def _bit_is_set(num, bit):
+	bit = int('1' + '0'*bit, 2)
+	return num & bit != 0
 
-	def bit_is_set(self, num, bit):
-		bit = int('1' + '0'*bit, 2)
-		return num & bit != 0
+def to_signed_char(number):
+	if _bit_is_set(number, 8-1):
+		number = -(-number & 0xFF)
+	return number		
 
-	def to_signed_char(self, number):
-		if self.bit_is_set(number, 8-1):
-			number = -(-number & 0xFF)
-		return number		
+def to_signed_int(number):
+	if _bit_is_set(number, 32-1):
+		number = -(-number & 0xFFFFFFFF)
+	return number
 
-	def to_signed_int(self, number):
-		if self.bit_is_set(number, 32-1):
-			number = -(-number & 0xFFFFFFFF)
-		return number
-
-	def to_signed_long(self, number):
-		if self.bit_is_set(number, 64-1):
-			number = -(-number & 0xFFFFFFFFFFFFFFFF)
-		return number
+def to_signed_long(number):
+	if _bit_is_set(number, 64-1):
+		number = -(-number & 0xFFFFFFFFFFFFFFFF)
+	return number
 
 
 #Process model-----------------------------------------
@@ -68,15 +64,14 @@ class Pretty_Model():
 
 		value = model.evaluate(var)
 		size = var.size()
-		converter = Sign_Converter()
 
 		if isinstance(value, BitVecNumRef):
 			num_value = value.as_long()
 			
 			if size == 32: 
-				num_value = converter.to_signed_int(num_value)		
+				num_value = to_signed_int(num_value)		
 			elif size == 64:
-				num_value = converter.to_signed_long(num_value)
+				num_value = to_signed_long(num_value)
 			
 			return num_value
 			
@@ -102,9 +97,11 @@ class Pretty_Model():
 
 				value = self.evaluate_sym_var(v, model)
 
-				if isinstance(value, int) and self.convert_chars and \
-						size == 8 and chr(value).isprintable():
-					value = chr(value)
+				if isinstance(value, int) and size == 8:
+					if self.convert_chars and size == 8 and chr(value).isprintable():
+						value = chr(value)
+					else:
+						value = to_signed_char(value)
 
 				json_obj[var][str(v)] = value
 			
