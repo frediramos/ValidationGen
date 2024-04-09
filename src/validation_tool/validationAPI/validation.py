@@ -142,9 +142,10 @@ class get_cnstr(SimProcedure):
 		#Increment RESTR_COUNTER
 		return_value = RESTR_COUNTER
 		RESTR_COUNTER += 1
-	
-		assert self.state.solver.eval(length) % 8 == 0,\
-		 "Size is in bits but must be divisible by 8!"
+
+		length = self.state.solver.eval(length)
+		assert length % 8 == 0,\
+		 "[!] Size in bits must be divisible by 8!"
 
 		#Lift memory contents for functions with side-effects
 		mem_restrs = self.get_memory()
@@ -153,19 +154,17 @@ class get_cnstr(SimProcedure):
 		c = self.state.solver.constraints
 	
 		#Ignore Ret for void functions
-		if self.state.solver.eval(length) != 0:
+		if length != 0:
 
-			var = self.state.memory.load(var_addr, length/8, endness='Iend_LE')
-			
+			var = self.state.memory.load(var_addr,  int(length/8), endness=self.state.arch.memory_endness)
+
 			# #Symbolic or Single Valued 
 			# if not self.state.solver.symbolic(var):
 			# 	var = self.value_fromBV(var)
 			# 	var = self.state.solver.BVV(var, self.state.arch.bits)
 
-			ret = self.state.solver.BVS("Ret", self.state.arch.bits, explicit_name=True)
+			ret = self.state.solver.BVS("Ret", length, explicit_name=True)
 			RET = ret
-
-			var =  var.sign_extend(self.state.arch.bits - var.size())
 			c.append(ret == var)
 		
 		c.append(mem_restrs)
