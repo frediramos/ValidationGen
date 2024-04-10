@@ -25,10 +25,11 @@ class angrEngine():
 	def __init__(self, binary:str, timeout=30*60, results_dir='.',
 				  stats_dir=None, paths_dir=None,
 				  convert_ascii=False,
-				  ignore=None, debug=False) -> None:
+				  ignore=None, debug=False, max_memory=None) -> None:
 		
 		self.binary = os.path.normpath(binary)
 		self.timeout = timeout
+		self.max_memory = max_memory
 		
 		self.results_dir = results_dir
 		
@@ -187,10 +188,12 @@ class angrEngine():
 	def _step(self, sm:SimulationManager, start:float):
 		try:
 			while sm.active:
-				if psutil.virtual_memory().percent > 50:
-					raise MemoryError
 				sm.step()
-		
+				
+				if self.max_memory:
+					if psutil.virtual_memory().percent > self.max_memory:					
+						raise MemoryError
+				
 		except Exception as e:
 			
 			if self.stats_dir:
