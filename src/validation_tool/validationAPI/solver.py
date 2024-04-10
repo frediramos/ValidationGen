@@ -75,7 +75,7 @@ class CSummary(SimProcedure):
 		return not self.state.solver.satisfiable(extra_constraints=(neg_cnstr,))
 
 	def is_sat(self, cnstr):
-		return not self.state.solver.satisfiable(extra_constraints=(cnstr,))
+		return self.state.solver.satisfiable(extra_constraints=(cnstr,))
 
 	def _assert(self, cnstr):
 		if not self.state.solver.satisfiable(extra_constraints=(cnstr,)):
