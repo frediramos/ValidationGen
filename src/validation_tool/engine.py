@@ -104,12 +104,16 @@ class angrEngine():
 		addr = str(state.inspect.function_address) 	#<BV32 0x80483a3>
 		addr = addr.split()[1] 			 		 	#0x80483a3>
 		addr = addr[:-1]					  		#0x80483a3
-		addr = addr[2:]								#80483a3
+		# addr = addr[2:]							#80483a3
+
+		symbol = state.project.loader.find_symbol(int(addr, 16))
+		if not symbol:
+			return
 
 		if addr in self.fcalled.keys():
-			self.fcalled[addr] += 1
+			self.fcalled[symbol.name] += 1
 		else:
-			self.fcalled[addr] = 1
+			self.fcalled[symbol.name] = 1
 
 
 	def _save_paths(self, sm:SimulationManager):
@@ -165,15 +169,8 @@ class angrEngine():
 			}
 		else:
 			out_stats['N_Paths'] = len(get_states(sm))
-		
-		#Convert function call addrs to symbols
-		converted = {}
-		for f in self.fcalled.keys():
-			if f in self.fnames.keys():
-				fname = self.fnames[f]
-				converted[fname] = self.fcalled[f]
 
-		out_stats['Fcalled'] = converted
+		out_stats['Fcalled'] = self.fcalled
 		out_stats['Fcalled'].pop('main', None)
 		
 		out_stats = {self.binary_name:out_stats}
