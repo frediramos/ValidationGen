@@ -31,7 +31,6 @@ test:
 
 test-run:
 
-	$(eval )
 	summbv -config $(CONFIG) -o $(TEST) --lib $(SUMM) -run
 	@diff -Bb  <(sed '3q;d' $(EXPECTED_RSLT)) <(sed '3q;d' $(RESULT));\
 	if [ $$? -eq 0 ]; \
