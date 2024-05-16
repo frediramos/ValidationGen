@@ -4,11 +4,14 @@ type_defs = [
     '#define LONG_SIZE (sizeof(long) * 8)\n',
     '#define CHAR_SIZE (sizeof(char) * 8)\n',
     '#define PTR_SIZE (sizeof(void*) * 8)\n',
+    '#define FALSE 0\n',
+    '#define TRUE 1\n',
     'typedef void* symbolic;\n',
     'typedef int state_t;\n',
     'typedef unsigned int size_t;\n',
     'typedef unsigned int cnstr_t;\n',
     'typedef unsigned int result_t;\n',
+    'typedef unsigned int list_t;\n',
     '\n'
 ]
 
@@ -56,6 +59,17 @@ constraints_api = {
     '_ITE_VAR_':'cnstr_t _ITE_VAR_(cnstr_t cnstr1, symbolic var1, symbolic var2) {return 0;}\n' 
 }
 
+list_api = {
+    'lst_mk':     'list_t lst_mk(){return 0;}\n',
+    'lst_cons':   'list_t lst_cons(symbolic value, list_t lst){return 0;}\n',
+    'lst_empty':  'cnstr_t lst_empty(list_t lst){return 0;}\n',
+    'lst_tl':     'list_t lst_tl(list_t lst){return 0;}\n',
+    'lst_hd':     'symbolic lst_hd(list_t lst){return 0;}\n',
+    'lst_len':    'size_t lst_len(list_t lst){return 0;}\n',
+    'allocd':     'void allocd(void* ptr, size_t size){return;}\n',
+    'cond_write': 'void cond_write(void* ptr, symbolic c, cnstr_t pc){return;}\n',
+}
+
 #Merge all 
 all_api = {
     'save_current_state':       'state_t save_current_state() {return 0;}\n',
@@ -89,7 +103,15 @@ all_api = {
     '_OR_' :                    'cnstr_t _OR_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n',
     '_AND_':                    'cnstr_t _AND_(cnstr_t cnstr1, cnstr_t cnstr2) {return 0;}\n',
     '_ITE_':                    'cnstr_t _ITE_(cnstr_t cnstr1, cnstr_t cnstr2, cnstr_t cnstr3) {return 0;}\n',
-    '_ITE_VAR_':                'cnstr_t _ITE_VAR_(cnstr_t cnstr1, symbolic var1, symbolic var2) {return 0;}\n' 
+    '_ITE_VAR_':                'cnstr_t _ITE_VAR_(cnstr_t cnstr1, symbolic var1, symbolic var2) {return 0;}\n',
+    'lst_mk':                   'list_t lst_mk(){return 0;}\n',
+    'lst_cons':                 'list_t lst_cons(symbolic value, list_t lst){return 0;}\n',
+    'lst_empty':                'cnstr_t lst_empty(list_t lst){return 0;}\n',
+    'lst_tl':                   'list_t lst_tl(list_t lst){return 0;}\n',
+    'lst_hd':                   'symbolic lst_hd(list_t lst){return 0;}\n',
+    'lst_len':                  'size_t lst_len(list_t lst){return 0;}\n',
+    'allocd':                   'void allocd(void* ptr, size_t size){return;}\n',
+    'cond_write':               'void cond_write(void* ptr, symbolic c, cnstr_t pc){return;}\n'
 }
 
 
