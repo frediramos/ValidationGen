@@ -111,6 +111,7 @@ all_api = {
     'lst_tl':                   'list_t lst_tl(list_t lst){return 0;}\n',
     'lst_hd':                   'symbolic lst_hd(list_t lst){return 0;}\n',
     'lst_len':                  'size_t lst_len(list_t lst){return 0;}\n',
+    'lst_zeros':                'list_t lst_zeros(size_t n){return 0;}\n',
     'allocd':                   'void allocd(void* ptr, size_t size){return;}\n',
     'cond_write':               'void cond_write(void* ptr, symbolic c, cnstr_t pc){return;}\n'
 }
