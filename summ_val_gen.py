@@ -56,6 +56,9 @@ def get_cmd_args():
 	parser.add_argument('-memory', action='store_true',
 						help='Evaluate a summary with memory manipulation side-effects')
 
+	parser.add_argument('-ret-memory', action='store_true',
+						help='Evaluate a summary with memory manipulation side-effects')
+
 	parser.add_argument('-config', metavar='path', type=str, required=False,
 						help='Config file')
 
@@ -161,6 +164,7 @@ if __name__ == "__main__":
 	compile_arch = args.compile
 	lib_paths = args.lib
 	memory = args.memory
+	ret_memory = args.ret_memory
 	config_file = args.config
 	noapi = args.noAPI
 	
@@ -236,7 +240,7 @@ if __name__ == "__main__":
 				    					arraysize=arraysize, nullbytes=nullbytes,
 										maxnum=maxvalue, maxnames=max_names,
 										default=default_values, concrete_arrays=concrete_array,
-									    memory=memory,
+									    memory=memory, ret_memory=ret_memory,
 										cncrt_name=func_name, summ_name=summ_name,
 										no_api=noapi)
 	file = valgenerator.gen()

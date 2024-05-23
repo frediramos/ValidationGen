@@ -1,18 +1,32 @@
 from pycparser.c_ast import *
 
-from SummValidation.APIGen.APIGen import API_Gen
+from SummValidation.APIGen.APIGen import API_Gen as API
 from SummValidation.Utils.utils import returnValue
 
 from . ArgGen import Symbolic_Args
 
 class TestGen:
-    def __init__(self, args, ret, cncrt_name, summ_name, memory, max_args):   
+    def __init__(self, args, ret, cncrt_name, summ_name, memory, ret_memory, max_args):   
         self.args = args
-        self.ret = ret
+        self.ret_type = ret
         self.memory = memory
+        self.ret_memory = ret_memory
         self.cncrt_name = cncrt_name
         self.summ_name = summ_name
         self.max_args = max_args
+
+        print(self.ret_type)
+
+    def tag_memory(self, ptr_names, size_macro):
+        code = []
+        if isinstance(size_macro, list):
+            assert len(ptr_names) == len(size_macro)
+            for ptr, size in zip(ptr_names, size_macro):
+                code.append(API.mem_addr(ptr, size))
+        else:
+            for ptr in ptr_names:
+                code.append(API.mem_addr(ptr, size_macro))
+        return code
 
 
     def call_function(self, fname, call_args, ret_name, ret_type):
@@ -22,16 +36,27 @@ class TestGen:
             return rvalue  
         return Decl(ret_name, [], [], [], [], lvalue, rvalue, None)
 
+   
+    def _run_function(self, fname:str, func_type:str,  ret_name:str, cnstr_name:str, id:int, args, size_macro):
+        code = [self.call_function(fname, args, ret_name, self.ret_type)]
 
-    def tag_memory(self, gen, ptr_names, size_macro):
-        code = []
-        if isinstance(size_macro,list):
-            for ptr, size in zip(ptr_names, size_macro):
-                code.append(gen.mem_addr(ptr, size))
-        else:
-            for ptr in ptr_names:
-                code.append(gen.mem_addr(ptr, size_macro))
+        if self.ret_memory:
+            assert not isinstance(size_macro, list)
+            code += [API.mem_addr(ret_name, size_macro)]
+
+        code += [
+            API.get_cnstr(cnstr_name, ret_name, self.ret_type),
+            API.store_cnstr(f'{func_type}_test{id}', cnstr_name),
+        ]
+        
         return code
+
+    def run_concrete(self, id, args, size_macro):
+        return self._run_function(self.cncrt_name, 'cnctr', 'ret1', 'cnstr1', id, args, size_macro)
+
+    def run_summary(self, id, args, size_macro):
+        return self._run_function(self.summ_name, 'summ', 'ret2', 'cnstr2', id, args, size_macro)
+
 
     def createTest(self, name, size_macro,
                     null_bytes, max_macro,
@@ -39,42 +64,36 @@ class TestGen:
         
         #Helper objects
         sym_args_gen = Symbolic_Args(self.args, size_macro, null_bytes, max_macro, self.max_args)
-        api_gen = API_Gen()
 
         #Create symbolic args
         args_code = sym_args_gen.create_symbolic_args(default, concrete)
         
         #Get ordered arg names
-        args_names = sym_args_gen.get_all_args()
+        args_name = sym_args_gen.get_all_args()
 
         #Body contains the test code
         body = [
             *args_code,
-            api_gen.save_current_state('initial_state'),
+            API.save_current_state('initial_state'),
         ]
 
         if self.memory:
             ptr_names = sym_args_gen.get_ptr_args()
-            body += self.tag_memory(api_gen, ptr_names, size_macro)
+            body += self.tag_memory(ptr_names, size_macro)
 
-        body +=[
-            self.call_function(self.cncrt_name, args_names, 'ret1', self.ret),
-            api_gen.get_cnstr('cnstr1', 'ret1', self.ret),
-            api_gen.store_cnstr(f'cnctr_test{id}', 'cnstr1'),
+        body += [
+            *self.run_concrete(id, args_name, size_macro),
             
-            api_gen.halt_all('initial_state'),
+            API.halt_all('initial_state'),
 
-            self.call_function(self.summ_name, args_names, 'ret2', self.ret),			
-            api_gen.get_cnstr('cnstr2', 'ret2', self.ret),
-            api_gen.store_cnstr(f'summ_test{id}', 'cnstr2'),
+            *self.run_summary(id, args_name, size_macro),
 
-            api_gen.halt_all('NULL'),
+            API.halt_all('NULL'),
 
-            api_gen.check_implications('result', f'cnctr_test{id}', f'summ_test{id}'),
-            api_gen.print_counterexamples('result'),
+            API.check_implications('result', f'cnctr_test{id}', f'summ_test{id}'),
+            API.print_counterexamples('result'),
 
-            #Return
-            returnValue(None)
+            returnValue()
         ]
 
         #Create function ast
@@ -83,7 +102,6 @@ class TestGen:
         typedecl = TypeDecl(name, [], None, IdentifierType(names=['void']))
         funcdecl = FuncDecl(None, typedecl)
         decl = Decl(name, [], [], [], [], funcdecl, None, None)
-        
         
         return FuncDef(decl, None, block)
 

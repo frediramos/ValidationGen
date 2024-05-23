@@ -20,7 +20,7 @@ class ValidationGenerator(CGenerator):
 				 maxnum = [], maxnames = [],
 				 default = {}, concrete_arrays = {},
 				 pointersize=5, fuel = 5,
-				 memory = False,
+				 memory = False, ret_memory = False,
 				 cncrt_name = None, summ_name=None, no_api=False,
 				 fakelib=None):
 
@@ -36,6 +36,7 @@ class ValidationGenerator(CGenerator):
 		self.fuel = fuel
 
 		self.memory = memory
+		self.ret_memory = ret_memory
 
 		#Summary name (if summ is not isolated in a file, e,g in a library)
 		self.summ_name = summ_name
@@ -192,7 +193,7 @@ class ValidationGenerator(CGenerator):
 		#Call Gen visitor
 		gen = TestGen(args, ret_type,
 		 		self.cncrt_name, self.summ_name,
-		   		self.memory, self.maxnames)
+		   		self.memory, self.ret_memory, self.maxnames)
 
 		return gen.createTest(testname,
 				array_size, null_bytes,

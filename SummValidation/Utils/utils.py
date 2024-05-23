@@ -26,11 +26,12 @@ def defineMacro(label, value):
 def defineInclude(name):
 	return f'#include <{name}>\n'
 
-def returnValue(val, operator=None):
+def returnValue(val=None, operator=None):
 	if operator:
 		val = UnaryOp(operator, val)
-	expr = ExprList([val])
-	return Return(expr)
+	if val:
+		val = ExprList([val])
+	return Return(val)
 
 
 def createFunction(name, args, returnType):
