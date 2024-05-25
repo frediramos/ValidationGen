@@ -47,5 +47,7 @@ class API_Gen():
     def print_counterexamples(result):
         return FuncCall(ID(f'print_counterexamples'), ExprList( [ID(result)] ))
 
-    def mem_addr(name, size):
-        return FuncCall(ID(f'mem_addr'), ExprList( [Constant('string', f'\"{name}\"'), ID(name), ID(size)] ))
+    def mem_addr(var, size, name=None):
+        if not name:
+            name = var
+        return FuncCall(ID(f'mem_addr'), ExprList( [Constant('string', f'\"{name}\"'), ID(var), ID(size)] ))

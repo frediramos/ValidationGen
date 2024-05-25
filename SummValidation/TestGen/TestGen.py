@@ -15,7 +15,6 @@ class TestGen:
         self.summ_name = summ_name
         self.max_args = max_args
 
-        print(self.ret_type)
 
     def tag_memory(self, ptr_names, size_macro):
         code = []
@@ -42,7 +41,7 @@ class TestGen:
 
         if self.ret_memory:
             assert not isinstance(size_macro, list)
-            code += [API.mem_addr(ret_name, size_macro)]
+            code += [API.mem_addr(ret_name, size_macro, 'ret')]
 
         code += [
             API.get_cnstr(cnstr_name, ret_name, self.ret_type),
