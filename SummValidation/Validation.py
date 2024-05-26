@@ -114,8 +114,7 @@ class ValidationGenerator(CGenerator):
 		tests = max(len(self.maxnum),len(self.arraysize))
 
 		#Save Multiple fresh states if needed (multiple tests)
-		main_body += [API_Gen().save_current_state(f'fresh_state{i}')
-					 for i in range(1,tests)]
+		main_body += [API_Gen.save_current_state(f'fresh_state{i}') for i in range(1,tests)]
 
 		for i in range(1, tests+1):	
 			testName = f'test_{i}'
@@ -129,7 +128,7 @@ class ValidationGenerator(CGenerator):
 
 			#Halt to a fresh state in between tests
 			if i < tests:
-				main_body.append(API_Gen().halt_all(f'fresh_state{i}')) 
+				main_body.append(API_Gen.halt_all(f'fresh_state{i}')) 
 		
 		return test_defs, main_body
 
