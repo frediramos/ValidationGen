@@ -69,7 +69,9 @@ list_api = {
     'lst_zeros':  'list_t lst_zeros(size_t n){return 0;}\n',
     'allocd':     'void allocd(void* ptr, size_t size){return;}\n',
     'cond_write': 'void cond_write(void* ptr, symbolic c, cnstr_t pc){return;}\n',
-    'mem_alloc':  'void* mem_alloc(size_t bytes){return 0;}\n'
+    'mem_alloc':  'void* mem_alloc(size_t bytes){return 0;}\n',
+    'mem_free':   'void  mem_free(void* ptr){return ;}\n',
+    'n_allocd':   'size_t n_allocd(void* ptr){return 0;}\n'
 }
 
 #Merge all 
@@ -115,7 +117,9 @@ all_api = {
     'lst_zeros':                'list_t lst_zeros(size_t n){return 0;}\n',
     'allocd':                   'void allocd(void* ptr, size_t size){return;}\n',
     'cond_write':               'void cond_write(void* ptr, symbolic c, cnstr_t pc){return;}\n',
-    'mem_alloc':                'void* mem_alloc(size_t bytes){return 0;}\n'
+    'mem_alloc':                'void* mem_alloc(size_t bytes){return 0;}\n',
+    'mem_free':                 'void  mem_free(void* ptr){return ;}\n',
+    'n_allocd':                 'size_t n_allocd(void* ptr){return 0;}\n'
 }
 
 
